@@ -1,2 +1,2 @@
-# e15
-Coursework for CSCI E-15
+# e15 Course work
+Spring 2020
