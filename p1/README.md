@@ -3,7 +3,7 @@
 + Production URL: <http://e15p1.kreinholz.me>
 
 ## Outside resources
-*your list of outside resources go here*
+<http://www.codecodex.com/wiki/Remove_non-letters_from_a_string>
 
 ## Notes for instructor
 *any notes for me to refer to while grading; if none, omit this section*
