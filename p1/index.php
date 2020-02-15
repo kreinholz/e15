@@ -6,6 +6,7 @@ $sample_string = 'Abba';
 # Define variables to hold the results of our tests
 $palindrome = 'No';
 $vowelCount = 0;
+$shifted = null;
 
 # Define a function to test whether a given string is a Palindrome
 function isPalindrome($string)
@@ -38,7 +39,44 @@ function countVowels($string)
     }
 }
 
+# Define a function that shifts ASCII letters A-Z and a-z only, by 1
+function shiftLettersByOne($string)
+{
+    # Import the global variable $shifted
+    global $shifted;
+    $characterArray = str_split($string);
+    foreach($characterArray as $value) {
+        # Convert each character to an integer
+        $integerizedCharacter = ord($value);
+        # Conditional to only shift integers that represent letters (see ASCII table)
+        if (($integerizedCharacter >= 65 and $integerizedCharacter <= 89) or ($integerizedCharacter >= 97 and $integerizedCharacter <= 121)) {
+            $integerizedCharacter++;
+            # convert the integer back to a character
+            $value = chr($integerizedCharacter);
+            # Append/concatenate the current character to the output string
+            $shifted .= $value;
+        }
+        elseif ($integerizedCharacter == 90) {
+            # convert the integer back to a character--but 'A' instead of 'Z'
+            $value = chr(65);
+            # Append/concatenate the current character to the output string
+            $shifted .= $value;
+        }
+        elseif ($integerizedCharacter == 122) {
+            # convert the integer back to a character--but 'a' instead of 'z'
+            $value = chr(97);
+            # Append/concatenate the current character to the output string
+            $shifted .= $value;
+        }
+        else {
+            # Append/concatenate the current character to the output string
+            $shifted .= $value;
+        }
+    }
+}
+
 isPalindrome($sample_string);
 countVowels($sample_string);
+shiftLettersByOne($sample_string);
 
 require 'index-view.php';
