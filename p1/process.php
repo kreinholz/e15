@@ -4,16 +4,9 @@ session_start();
 
 $inputString = $_POST['inputString'];
 
-# Define variables to hold the results of our tests
-$palindrome = 'No';
-$vowelCount = 0;
-$shifted = null;
-
 # Define a function to test whether a given string is a Palindrome
 function isPalindrome($string)
 {
-    # Import the global variable $palindrome
-    global $palindrome;
     # Use a Regular Expression (RegEx) to remove any non-alphabetic characters from string
     $stringAlphaOnly = preg_replace('/[^A-Za-z]/', '', $string); 
     # Convert the string to lowercase so we can perform a case-insensitive comparison
@@ -22,15 +15,17 @@ function isPalindrome($string)
     $stringReversed = strrev($stringLowercased);
     # Conditional check to see whether reversed string is identical to its unreversed form
     if ($stringReversed == $stringLowercased) {
-        $palindrome = 'Yes';
+        return 'Yes';
+    } else {
+        return 'No';
     }
 }
 
 # Define a function to test how many vowels the string contains
 function countVowels($string)
 {
-    # Import the global variable $vowelCount
-    global $vowelCount;
+    # Initialize the variable $vowelCount with a value of 0
+    $vowelCount = 0;
     $stringLowercased = strtolower($string);
     $characterArray = str_split($stringLowercased);
     foreach($characterArray as $value) {
@@ -38,13 +33,14 @@ function countVowels($string)
             $vowelCount++;
         }
     }
+    return $vowelCount;
 }
 
 # Define a function that shifts ASCII letters A-Z and a-z only, by 1
 function shiftLettersByOne($string)
 {
-    # Import the global variable $shifted
-    global $shifted;
+    # Initialize the variable $shifted
+    $shifted = null;
     $characterArray = str_split($string);
     foreach($characterArray as $value) {
         # Convert each character to an integer
@@ -74,17 +70,14 @@ function shiftLettersByOne($string)
             $shifted .= $value;
         }
     }
+    return $shifted;
 }
-
-isPalindrome($inputString);
-countVowels($inputString);
-shiftLettersByOne($inputString);
 
 $_SESSION['results'] = [
     'inputString' => $inputString,
-    'isPalindrome' => $palindrome,
-    'countVowels' => $vowelCount,
-    'shiftLettersByOne' => $shifted
+    'isPalindrome' => isPalindrome($inputString),
+    'countVowels' => countVowels($inputString),
+    'shiftLettersByOne' => shiftLettersByOne($inputString)
 ];
 
 header('Location: index.php');
