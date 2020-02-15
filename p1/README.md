@@ -5,6 +5,7 @@
 ## Outside resources
 + <http://www.codecodex.com/wiki/Remove_non-letters_from_a_string>
 + <https://www.php.net/manual/en/language.variables.scope.php>
++ The idea of converting characters to integers, then shifting them came from CS50, which I took back in 2012. In that class the implementation was done in C, and was more complex as it allowed for user input and shifting characters by the integer given by the user.
 + <https://www.php.net/manual/en/function.ord.php>
 + <https://www.php.net/manual/en/function.chr.php>
 
