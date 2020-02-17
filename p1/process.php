@@ -8,7 +8,7 @@ $inputString = $_POST['inputString'];
 function isPalindrome($string)
 {
     # Use a Regular Expression (RegEx) to remove any non-alphabetic characters from string
-    $stringAlphaOnly = preg_replace('/[^A-Za-z]/', '', $string); 
+    $stringAlphaOnly = preg_replace('/[^A-Za-z]/', '', $string);
     # Convert the string to lowercase so we can perform a case-insensitive comparison
     $stringLowercased = strtolower($stringAlphaOnly);
     # Reverse the characters in the string
@@ -28,7 +28,7 @@ function countVowels($string)
     $vowelCount = 0;
     $stringLowercased = strtolower($string);
     $characterArray = str_split($stringLowercased);
-    foreach($characterArray as $value) {
+    foreach ($characterArray as $value) {
         if ($value == 'a' or $value == 'e' or $value == 'i' or $value == 'o' or $value == 'u') {
             $vowelCount++;
         }
@@ -42,7 +42,7 @@ function shiftLettersByOne($string)
     # Initialize the variable $shifted
     $shifted = null;
     $characterArray = str_split($string);
-    foreach($characterArray as $value) {
+    foreach ($characterArray as $value) {
         # Convert each character to an integer
         $integerizedCharacter = ord($value);
         # Conditional to only shift integers that represent letters (see ASCII table)
@@ -52,20 +52,17 @@ function shiftLettersByOne($string)
             $value = chr($integerizedCharacter);
             # Append/concatenate the current character to the output string
             $shifted .= $value;
-        }
-        elseif ($integerizedCharacter == 90) {
+        } elseif ($integerizedCharacter == 90) {
             # convert the integer back to a character--but 'A' instead of 'Z'
             $value = chr(65);
             # Append/concatenate the current character to the output string
             $shifted .= $value;
-        }
-        elseif ($integerizedCharacter == 122) {
+        } elseif ($integerizedCharacter == 122) {
             # convert the integer back to a character--but 'a' instead of 'z'
             $value = chr(97);
             # Append/concatenate the current character to the output string
             $shifted .= $value;
-        }
-        else {
+        } else {
             # Append/concatenate the current character to the output string
             $shifted .= $value;
         }
