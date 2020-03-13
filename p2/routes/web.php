@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'WordController@index');
+Route::get('/process', 'WordController@process');
