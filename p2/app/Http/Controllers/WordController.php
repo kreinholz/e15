@@ -29,6 +29,52 @@ class WordController extends Controller
 
         # TO DO: import our dictionary of English language words and actually do something with the form data
 
+        # Import dictionary of English language words from file, read into array
+        # Ref: https://www.php.net/manual/en/function.file.php
+        $words = file('https://raw.githubusercontent.com/dwyl/english-words/master/words.txt', FILE_IGNORE_NEW_LINES);
+
+        # Now that we have our array of words, convert to lowercase, then
+        # split the inputString into an array
+        # Ref: https://www.php.net/manual/en/function.strtolower.php
+        # Ref: https://www.php.net/manual/en/function.str-split.php
+        $inputStringLowercase = strtolower($inputString);
+        $inputStringArray = str_split($inputStringLowercase);
+
+        # Iterate over each word in the $words array
+        # Ref: https://www.php.net/manual/en/control-structures.foreach.php
+        foreach ($words as $word) {
+            # convert the current string to lowercase, then split it into an array
+            $lowercaseWord = strtolower($word);
+            $currentWordArray = str_split($lowercaseWord);
+
+            # Create a new array containing the intersecting elements of our 2 arrays
+            # Ref: https://www.php.net/manual/en/function.array-intersect.php
+            #SLOW            $charsInCommon = array_intersect($currentWordArray, $inputStringArray);
+            # TO DO - REWRITE THE ABOVE TO DISALLOW DUPLICATES IN $inputStringArray--ONLY USE EACH CHAR ONCE
+
+            # Alternate way of comparing arrays
+            $charsInCommon = [];
+            # Ref: https://www.php.net/manual/en/function.in-array.php
+            # Ref:
+            foreach ($currentWordArray as $character) {
+                $match = array_search($character, $inputStringArray);
+                if ($match) {
+                    array_push($charsInCommon, $inputStringArray[$match]);
+                    unset($inputStringArray[$match]);
+                } else {
+                    continue;
+                }
+            }
+
+            # Compare $charsInCommon to $currentWordArray
+            if ($currentWordArray == $charsInCommon) {
+                # If the matching characters account for every character in the current word,
+                # push the current word in its string form to the $searchResults array.
+                # Ref: https://www.php.net/manual/en/function.array-push.php
+                array_push($searchResults, $word);
+            }
+        }
+
         # Redirect back to the form with data/results stored in the session
         # Ref: https://laravel.com/docs/redirects#redirecting-with-flashed-session-data
         return redirect('/')->with([
