@@ -37,6 +37,7 @@ P2 - Word Finder
 <p></p>
 @if($searchResults)
 <h2>English dictionary words that can be made from your input</h2>
+<p>{{ count($searchResults) }} dictionary entries found:</p>
 <ul>
     @foreach ($searchResults as $word)
         <li>{{ strtolower($word) }}</li>

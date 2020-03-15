@@ -51,21 +51,32 @@ class WordController extends Controller
 
             # Initialize a charsInCommon placeholder array to track matches during iteration
             $charsInCommon = [];
-            # Copy $inputStringArray to $tempInputStringArray to reset it after each iteration
-            $tempInputStringArray = $inputStringArray;
-            # Iterate over each character in the current word, using array-search to find the key of
-            # any matching character in $tempInputStringArray. If a match is found, push to
-            # $charsInCommon Array and remove from $tempInputStringArray (to avoid duplicate matches)
-            # Ref: https://www.php.net/manual/en/function.array-search.php
-            # Ref: https://www.php.net/manual/en/function.unset.php
-            foreach ($currentWordArray as $character) {
-                $match = array_search($character, $tempInputStringArray);
-                if ($match) {
-                    array_push($charsInCommon, $tempInputStringArray[$match]);
-                    unset($tempInputStringArray[$match]);
+            
+            # Check whether user checked the box to reuse letters, and if so, use the
+            # array_intersect() method to search the dictionary
+            if ($reuse) {
+                # Create a new array containing the intersecting elements of our 2 arrays
+                # Ref: https://www.php.net/manual/en/function.array-intersect.php
+                $charsInCommon = array_intersect($currentWordArray, $inputStringArray);
+            } else {
+                # If user didn't check the reuse letters box, search for matches in a slightly
+                # more complicated (but more intuitive in terms of search results) way
+                # Copy $inputStringArray to $tempInputStringArray to reset it after each iteration
+                $tempInputStringArray = $inputStringArray;
+                # Iterate over each character in the current word, using array-search to find the key of
+                # any matching character in $tempInputStringArray. If a match is found, push to
+                # $charsInCommon Array and remove from $tempInputStringArray (to avoid duplicate matches)
+                # Ref: https://www.php.net/manual/en/function.array-search.php
+                # Ref: https://www.php.net/manual/en/function.unset.php
+                foreach ($currentWordArray as $character) {
+                    $match = array_search($character, $tempInputStringArray);
+                    if ($match) {
+                        array_push($charsInCommon, $tempInputStringArray[$match]);
+                        unset($tempInputStringArray[$match]);
+                    }
                 }
             }
-    
+
             # Compare $charsInCommon to $currentWordArray
             if ($currentWordArray == $charsInCommon) {
                 # If the matching characters account for every character in the current word,
