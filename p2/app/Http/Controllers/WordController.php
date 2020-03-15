@@ -11,7 +11,7 @@ class WordController extends Controller
     public function process(Request $request)
     {
         $request->validate([
-            'inputString' => 'required'
+            'inputString' => 'required|alpha'
         ]);
 
         # Note: if validation fails, it will redirect
@@ -23,11 +23,9 @@ class WordController extends Controller
 
         # Get form data (default to null if no values exist)
         $inputString = $request->input('inputString', null);
-        $specialChars = $request->input('specialChars', null);
+        $reuse = $request->input('reuse', null);
         $alphabetical = $request->input('alphabetical', null);
         $length = $request->input('length', null);
-
-        # TO DO: import our dictionary of English language words and actually do something with the form data
 
         # Import dictionary of English language words from file, read into array
         # Ref: https://www.php.net/manual/en/function.file.php
@@ -81,18 +79,19 @@ class WordController extends Controller
         # Ref: https://laravel.com/docs/redirects#redirecting-with-flashed-session-data
         return redirect('/')->with([
             'inputString' => $inputString,
-            'specialChars' => $specialChars,
+            'reuse' => $reuse,
             'alphabetical' => $alphabetical,
             'length' => $length,
             'searchResults' => $searchResults
         ]);
     }
 
+    # Initial page view--if session data exists, pre-fill form accordingly
     public function index()
     {
         return view('word')->with([
             'inputString' => session('inputString', null),
-            'specialChars' => session('specialChars', null),
+            'reuse' => session('reuse', null),
             'alphabetical' => session('alphabetical', null),
             'length' => session('length', null),
             'searchResults' => session('searchResults', null)
