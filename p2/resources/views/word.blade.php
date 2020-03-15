@@ -32,9 +32,10 @@ P2 - Word Finder
 </form>
 <p></p>
 @if($searchResults)
+<h2>English dictionary words that can be made from your input</h2>
 <ul>
     @foreach ($searchResults as $word)
-        <li>{{ $word }}</li>
+        <li>{{ strtolower($word) }}</li>
     @endforeach
 </ul>
 @endif

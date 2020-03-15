@@ -31,7 +31,7 @@ class WordController extends Controller
 
         # Import dictionary of English language words from file, read into array
         # Ref: https://www.php.net/manual/en/function.file.php
-        $words = file('https://raw.githubusercontent.com/dwyl/english-words/master/words.txt', FILE_IGNORE_NEW_LINES);
+        $words = file('https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt', FILE_IGNORE_NEW_LINES);
 
         # Now that we have our array of words, convert to lowercase, then
         # split the inputString into an array
@@ -39,6 +39,10 @@ class WordController extends Controller
         # Ref: https://www.php.net/manual/en/function.str-split.php
         $inputStringLowercase = strtolower($inputString);
         $inputStringArray = str_split($inputStringLowercase);
+        # Add a throwaway value to the 0 key in $inputStringArray to avoid a bug whereby all
+        # instances of the first character in the $inputString are ignored during match searching
+        # Ref: https://www.php.net/manual/en/function.array-unshift.php
+        array_unshift($inputStringArray, '1');
 
         # Iterate over each word in the $words array
         # Ref: https://www.php.net/manual/en/control-structures.foreach.php
@@ -47,25 +51,23 @@ class WordController extends Controller
             $lowercaseWord = strtolower($word);
             $currentWordArray = str_split($lowercaseWord);
 
-            # Create a new array containing the intersecting elements of our 2 arrays
-            # Ref: https://www.php.net/manual/en/function.array-intersect.php
-            #SLOW            $charsInCommon = array_intersect($currentWordArray, $inputStringArray);
-            # TO DO - REWRITE THE ABOVE TO DISALLOW DUPLICATES IN $inputStringArray--ONLY USE EACH CHAR ONCE
-
-            # Alternate way of comparing arrays
+            # Initialize a charsInCommon placeholder array to track matches during iteration
             $charsInCommon = [];
-            # Ref: https://www.php.net/manual/en/function.in-array.php
-            # Ref:
+            # Copy $inputStringArray to $tempInputStringArray to reset it after each iteration
+            $tempInputStringArray = $inputStringArray;
+            # Iterate over each character in the current word, using array-search to find the key of
+            # any matching character in $tempInputStringArray. If a match is found, push to
+            # $charsInCommon Array and remove from $tempInputStringArray (to avoid duplicate matches)
+            # Ref: https://www.php.net/manual/en/function.array-search.php
+            # Ref: https://www.php.net/manual/en/function.unset.php
             foreach ($currentWordArray as $character) {
-                $match = array_search($character, $inputStringArray);
+                $match = array_search($character, $tempInputStringArray);
                 if ($match) {
-                    array_push($charsInCommon, $inputStringArray[$match]);
-                    unset($inputStringArray[$match]);
-                } else {
-                    continue;
+                    array_push($charsInCommon, $tempInputStringArray[$match]);
+                    unset($tempInputStringArray[$match]);
                 }
             }
-
+    
             # Compare $charsInCommon to $currentWordArray
             if ($currentWordArray == $charsInCommon) {
                 # If the matching characters account for every character in the current word,
