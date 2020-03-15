@@ -26,12 +26,6 @@ P2 - Word Finder
         <option value='reverse' {{ (old('alphabetical') == 'reverse' or $alphabetical == 'reverse') ? 'selected' : '' }}>Reverse Alphabetical</option>
     </select>
     <p></p>
-    <label for='length'>Display results shortest to longest or longest to shortest?</label>
-    <select name='length'>
-        <option value='shortest' {{ (old('length') == 'shortest' or $length == 'shortest') ? 'selected' : '' }}>Shortest to Longest</option>
-        <option value='longest' {{ (old('length') == 'longest' or $length == 'longest') ? 'selected' : '' }}>Longest to Shortest</option>
-    </select>
-    <p></p>
     <button type='submit'>Find Words</button>
 </form>
 <p></p>

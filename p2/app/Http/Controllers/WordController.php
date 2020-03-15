@@ -25,7 +25,6 @@ class WordController extends Controller
         $inputString = $request->input('inputString', null);
         $reuse = $request->input('reuse', null);
         $alphabetical = $request->input('alphabetical', null);
-        $length = $request->input('length', null);
 
         # Import dictionary of English language words from file, read into array
         # Ref: https://www.php.net/manual/en/function.file.php
@@ -86,13 +85,19 @@ class WordController extends Controller
             }
         }
 
+        # Check whether user wants results returned in alphabetical or reverse alphabetical order
+        # Reverse $searchResults key/value pairs accordingly if reverse option selected
+        # Ref: https://www.php.net/manual/en/function.array-reverse.php
+        if ($alphabetical == 'reverse') {
+            $searchResults = array_reverse($searchResults);
+        }
+
         # Redirect back to the form with data/results stored in the session
         # Ref: https://laravel.com/docs/redirects#redirecting-with-flashed-session-data
         return redirect('/')->with([
             'inputString' => $inputString,
             'reuse' => $reuse,
             'alphabetical' => $alphabetical,
-            'length' => $length,
             'searchResults' => $searchResults
         ]);
     }
@@ -104,7 +109,6 @@ class WordController extends Controller
             'inputString' => session('inputString', null),
             'reuse' => session('reuse', null),
             'alphabetical' => session('alphabetical', null),
-            'length' => session('length', null),
             'searchResults' => session('searchResults', null)
         ]);
     }
