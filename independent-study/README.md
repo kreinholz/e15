@@ -78,7 +78,21 @@ And you should see something like the following:
 
 <img src='images/laravel-welcome.png' alt='New Laravel App Default Welcome Screen'>
 
-Perfect! Now to bring in the [PHP-ML](https://github.com/php-ai/php-ml) library:
+Of course, we'll want to edit the following files to make this app easier to work with from our local XAMPP server:
+
+```
+C:\xampp\apache\conf\extra\httpd-vhosts.conf
+C:\Windows\System32\drivers\etc\hosts
+```
+Following the course instructions [here](https://hesweb.dev/e15/notes/local-server/local-domains#step-2-virtualhost-entry) and [here](https://hesweb.dev/e15/notes/local-server/local-domains#step-3-create-a-new-host) to add a new VirtualHost entry (I chose `classifer.loc`) and to create a new local host. Now we can access our **Laravel** app by going to the following address in our web browser:
+
+```
+http://classifier.loc
+```
+
+That'll make further development easier/more convenient. 
+
+Now to bring in the [PHP-ML](https://github.com/php-ai/php-ml) library:
 
 ```
 λ composer require php-ai/php-ml
@@ -193,44 +207,269 @@ echo memory_get_usage() / 1048576 . ' MB memory allocated after training' . PHP_
 ```
 These statements, for example, allowed me to pinpoint that my script ran out of memory before my model could be trained. That's a shame, but I've got an HP laptop with 16GB of RAM, not a supercomputer (not that you need a supercomputer to do Machine Learning).
 
-TO DO: try running this on a more capable computer and saving the trained model, bbc-nb.phpml, to a file, so I can load it via a Laravel Controller and use it in the example web app we're going to write in the next section...
+My nerd computer to the rescue! I pushed my classifer project to Github, then cloned it on my more capable desktop machine. Running our classification-model.php again yielded different and much more satisfying results:
+
+<img src='images/model-trained-on-bsd.png' alt='Model had plenty of memory to run on my desktop'>
+
+Note that it took just under 54 seconds to train and test our model on my FreeBSD machine, but the memory consumption wasn't actually that high (less than 2 GB of RAM)... It's possible upgrading the PHP version on my Windows laptop or otherwise tinkering with the settings would have allowed me to overcome the out of memory error.
+
+The model had 97% accuracy at classifying our test data, which is not bad at all. And, importantly for our **Laravel** web app, our trained model was saved to a file, __bbc-nb.phpml__, that we can load within a Laravel Controller and use to process user input (since it would be pretty poor form for a web app to burn through over 1 GB of server RAM *and* take over 53 seconds to return results to the user!).
+
+But what's inside our computer-generated "black box"?
+
+<img src='images/bbc-nb-ml-generated-file.png' alt='Machine Learning generated model'>
+
+Well...glad that clears things up! The file is approximately 250 MB in size, so it's no lightweight, either. I copied it from its save location on my FreeBSD machine to its corresponding location on my Windows development machine:
+
+```
+C:\xampp\htdocs\e15\classifier\resources\ml
+```
+Now we're ready to return to our **Laravel** app and direct user input to the trained Machine Learning model so we can dazzle visitors to our site with our text classification magic.
+
+## Incorporating our trained Machine Learning model into our Laravel app
+
+Now that we've written (or for illustrative purposes, *copied*) and trained our Machine Learning text classification model, and saved it to a file so we can leverage its power *without* the need to re-train it, it's time to incorporate the model into our **Laravel** app.
+
+I'm not going to rehash the entire process of setting up a **Laravel** app, so you should instead refer to [Week 5](https://hesweb.dev/e15/week/5), [Week 6](https://hesweb.dev/e15/week/6), and [Week 7](https://hesweb.dev/e15/week/7) of the CSCI E-15 notes and lectures.
+
+For purposes of getting this app ready to demonstrate, I made the following edits to the following files:
+
+```
+C:\xampp\htdocs\e15\classifier\routes\web.php
+```
+```php
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', 'ClassifierController@index');
+Route::get('/classify', 'ClassifierController@classify');
+```
+```
+C:\xampp\htdocs\e15\classifier\app\Http\Controllers\ClassifierController.php
+```
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Arr;
+use Str;
+use Phpml\ModelManager;
+
+class ClassifierController extends Controller
+{
+    public function classify(Request $request)
+    {
+        $request->validate([
+            'articleText' => 'required|string'
+        ]);
+
+        # Note: if validation fails, it will redirect
+        # back to `/` (page from which the form was submitted)
+
+        # Get form data (default to null if no values exist)
+        $articleText = $request->input('articleText', null);
+
+        # Import saved Machine Learning model from file
+        $modelManager = new ModelManager();
+        $model = $modelManager->restoreFromFile('../resources/ml/bbc-nb.phpml');
+
+        # Run our pre-trained model on the user-provided string of text
+        $predicted = $model->predict([$articleText])[0];
+
+        # Redirect back to the form with data/results stored in the session
+        # Ref: https://laravel.com/docs/redirects#redirecting-with-flashed-session-data
+        return redirect('/')->with([
+            'articleText' => $articleText,
+            'predicted' => $predicted
+        ]);
+    }
+
+    # Initial page view--if session data exists, pre-fill form accordingly
+    public function index()
+    {
+        return view('classifier')->with([
+            'articleText' => session('articleText', null),
+            'predicted' => session('predicted', null)
+        ]);
+    }
+}
+```
+```
+C:\xampp\htdocs\e15\classifier\resources\views\classifer.blade.php
+```
+```php
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='/css/classifier.css' rel='stylesheet'>
+        <title>New Article Classifier</title>
+    </head>
+    <body>
+        <div class='content'>
+        <header>
+            <div class="title m-b-md">
+                News Article Classifier Using Machine Learning
+            </div>
+        </header>
+
+        <p>
+            Copy and paste the text of a news article to have AI classify it into a category.
+        </p>
+        
+        <form method='GET' action='/classify'>
+            <label for='inputString'>Article text:</label>
+            <input type='textarea' rows='20' cols='50' id='articleText' name='articleText' value='{{ old('articleText', $articleText) }}'> 
+            <p></p>    
+            @if($errors->get('articleText'))
+                <div class='error'>This field must be filled out with plain text (no images) from a news article.</div>
+                <p></p>
+            @endif
+            <button type='submit'>Classify this article</button>
+        </form>
+        <p></p>
+        @if($predicted)
+        <h2>Machine Learning Classification Results</h2>
+        <p>The computer classified your article as {{ $predicted }}</p>
+        <p></p>
+        @endif
+
+        <footer>
+            Based on <a href='https://arkadiuszkondas.com/text-data-classification-with-bbc-news-article-dataset/'>Text data classification with BBC news article dataset</a> by Arkadiusz Kondas
+        </footer>
+    </div>
+    </body>
+</html>
+```
+```
+C:\xampp\htdocs\e15\classifier\public\css\classifier.css
+```
+```css
+html, body {
+    background-color: #fff;
+    color: #636b6f;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 200;
+    height: 100vh;
+    margin: 0;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.flex-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.position-ref {
+    position: relative;
+}
+
+.top-right {
+    position: absolute;
+    right: 10px;
+    top: 18px;
+}
+
+.content {
+    text-align: center;
+}
+
+.title {
+    font-size: 84px;
+}
+
+.links > a {
+    color: #636b6f;
+    padding: 0 25px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.m-b-md {
+    margin-bottom: 30px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* The following error class comes from Bootstrap
+   Ref: https://github.com/twbs/bootstrap/blob/master/dist/css/bootstrap.css */
+.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+```
+Now to test our app by browsing to `http://classifier.loc` and pasting in the text of a news article...
+
+You might receive an error message like this when testing your **Laravel** app locally:
+
+<img src='images/php-ai-vendor-write-error.png' alt='Laravel error related to PHP-AI vendor folder write permissions'>
+
+This is a [known issue](https://github.com/php-ai/php-ml/issues/171) and the solution is to check write permissions for the following directory:
+
+```
+classifer\vendor\php-ai\php-ml\var\
+```
+On my Windows 10 laptop, it turned out this folder was marked "read only", all I had to do was uncheck that box and confirm I wanted to remove the "read only" attribute from this folder and all subfolders/files contained therein.
+
+<img src='images/var-is-read-only-by-default.png' alt='php-ai/php-ml var/ directory is read only by default on Windows'>
+
+And then make sure computer users have write permissions to this folder as well:
+
+<img src='images/give-laptop-users-full-control-over-var.png' alt='Making sure computer users have write access to var/'>
+
+After apply those changes, let's try our web app again:
+
+<img src='images/out-of-memory-laravel-app.png' alt='Even with pre-trained ML model, Laravel app runs out of memory'>
+
+Right. That didn't go as we expected. Time to modify our `ClassifierController.php` using the advice found [here](https://haydenjames.io/understanding-php-memory_limit/):
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace PhpmlExamples;
+namespace App\Http\Controllers;
 
-use Phpml\ModelManager;
-
-include 'vendor/autoload.php';
-
-$start = microtime(true);
-$modelManager = new ModelManager();
-$model = $modelManager->restoreFromFile(__DIR__.'/../model/bbc.phpml');
-$total = microtime(true) - $start;
-
-echo sprintf('Model loaded in %ss', round($total, 4)) . PHP_EOL;
-
-$text = 'The future of the games industry, at least as Google sees it, is in streaming.
-It’s a trend that feels inevitable - just ask anyone in the music, TV or film business. Streaming is where it\'s at, and the possibility for what can be streamed has only ever been bound by the limitations of internet connectivity.
-Google thinks its technology can make streaming games a plausible and possibly even pleasurable reality. One where gamers aren’t driven to insanity by stuttering gameplay and slow-reacting characters.
-For the sake of argument, let’s assume it succeeds. Where might Google - with its track record for upending business models, often with unintended consequences - lead the industry?
-Shifting costs
-Games consoles are expensive. The games are (mostly) expensive.
-Google’s Stadia could eliminate both costs, replacing them with a subscription fee. A ballpark figure might be $15-$30 a month - though some predict big name titles might have an additional fee on top, like buying a new movie on Amazon Prime Video.
-Good news? It depends on where you’re coming from.
-For gamers, there are a number of hurdles. Phil Harrison, Google’s man in charge of Stadia, told me his team\'s tests managed 4K gaming on download speeds of “around 25mbps”.
-For context, Microsoft currently suggests a minimum of just 3mbps to play “traditional” games online. And the difference between getting 3mbps and 25mbps? Hundreds of dollars a year in payments to your internet service provider.
-Or, the difference could be not being able to play at all - 25mbps is more than double the average connection speed across the US, according to research commissioned and part-funded by, er, Google.';
-
-
-$start = microtime(true);
-
-$predicted = $model->predict([$text])[0];
-$total = microtime(true) - $start;
-
-echo sprintf('Predicted category: %s in %ss', $predicted, round($total, 6)) . PHP_EOL;
+ini_set('memory_limit', '2048M');
 ```
-Not that we would go exactly with the above--we don't want to run this from the command line anymore, but rather, have a Laravel Controller that takes text area input from a user, runs it through the restored pre-trained model, and outputs the category/classification to the user's hopeful amazement.
+After which our app should have plenty of memory to complete the text processing.
+
+## Deploying to Production
+
+To Do...
+
+Please note that our trained Machine Learning model is too large of a file to be uploaded to Github:
+
+<img src='images/github-will-reject-trained-ml-model.png' alt='Trained Machine Learning model is too large to be uploaded to Github'>
+
+As a result, we will have to manually place this on our production server via `scp`.
+
+## Sources
++ To
++ Do
++ These are all linked to in the body of this document, but will be listed individually here as well
