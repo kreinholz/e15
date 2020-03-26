@@ -207,7 +207,7 @@ echo memory_get_usage() / 1048576 . ' MB memory allocated after training' . PHP_
 ```
 These statements, for example, allowed me to pinpoint that my script ran out of memory before my model could be trained. That's a shame, but I've got an HP laptop with 16GB of RAM, not a supercomputer (not that you need a supercomputer to do Machine Learning).
 
-My nerd computer to the rescue! I pushed my classifer project to Github, then cloned it on my more capable desktop machine. Running our classification-model.php again yielded different and much more satisfying results:
+My nerd computer to the rescue! I pushed my classifier project to Github, then cloned it on my more capable desktop machine. Running our classification-model.php again yielded different and much more satisfying results:
 
 <img src='images/model-trained-on-bsd.png' alt='Model had plenty of memory to run on my desktop'>
 
@@ -513,9 +513,9 @@ You should see something like the following output:
 
 Note that I didn't have to specify a different runtime memory limit, because I already hardcoded the increased memory limit in `command-line-classifier.php`. Two different ways to achieve a similar result.
 
-Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results, I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of (Jupyter Notebooks)[https://jupyter.org/], (TensorFlow)[https://www.tensorflow.org/], and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the PHP-AI/PHP-ML library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
+Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results, I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the PHP-AI/PHP-ML library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
 
-If this has piqued your interest in Machine Learning, (Kaggle)[https://www.kaggle.com/] is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations no less). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
+If this has piqued your interest in Machine Learning, [Kaggle](https://www.kaggle.com/) is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations no less). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
 
 ## Common Issues
 
@@ -537,6 +537,14 @@ And then make sure computer users have write permissions to this folder as well:
 <img src='images/give-laptop-users-full-control-over-var.png' alt='Making sure computer users have write access to var/'>
 
 ## Sources
-+ To
-+ Do
-+ These are all linked to in the body of this document, but will be listed individually here as well
++ [Dr. Andrew Ng's course on Machine Learning](https://www.coursera.org/learn/machine-learning)
++ [TowardsDataScience article on deploying a Machine Learning app using Flask/Python](https://towardsdatascience.com/how-to-easily-deploy-machine-learning-models-using-flask-b95af8fe34d4)
++ [PHP-AI/PHP-ML Documentation](https://php-ml.readthedocs.io/en/latest/)
++ [CSCI E-15 Course Notes](https://hesweb.dev/e15/notes/)
++ [Official Laravel Documenation on Controllers](https://laravel.com/docs/master/controllers)
++ [Arkadiusz Kondas' article on the PHP-AI/PHP-ML example BBC News Classifier](https://arkadiuszkondas.com/text-data-classification-with-bbc-news-article-dataset/)
++ [Github code repository for PHP-AI/PHP-ML BBC News Classifier example](https://github.com/php-ai/php-ml-examples/blob/master/classification/bbc.php)
++ [Github code repository for alternate PHP-AI/PHP-ML BBC News Classifier example](https://github.com/php-ai/php-ml-examples/blob/master/classification/bbcPipeline.php)
++ [StackOverflow answer to PHP memory limit error](https://stackoverflow.com/a/36000650)
++ [Blog Post on alternative way to increase PHP memory limit for a single file](https://haydenjames.io/understanding-php-memory_limit/)
++ [Github Issues Forum for PHP-AI/PHP-ML project](https://github.com/php-ai/php-ml/issues/171)
