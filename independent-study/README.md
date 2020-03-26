@@ -423,7 +423,101 @@ textarea {
     border-color: #f5c6cb;
 }
 ```
-Now to test our app by browsing to `http://classifier.loc` and pasting in the text of a news article...
+Now to test our app by browsing to `http://classifier.loc`. Based on the above code, our app should look something like this when run locally in a web browser:
+
+<img src='images/laravel-app-home.png' alt='Laravel App Default View'>
+
+To test it, simply copy a section of text from a news article, paste it into the text input, and click the `Classify this article` button.
+
+<img src='images/out-of-memory-laravel-app.png' alt='Even with pre-trained ML model, Laravel app runs out of memory'>
+
+That didn't go as we expected. Time to modify our `ClassifierController.php` using the advice found [here](https://haydenjames.io/understanding-php-memory_limit/):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+ini_set('memory_limit', '2048M');
+```
+After which our app should have plenty of memory to complete the text processing.
+
+Unfortunately for me, my laptop once again proved to have insufficient memory, so I was forced to run the Laravel app from my nerd computer using a local FreeBSD apache24 web server I set up for testing purposes:
+
+<img src='images/laravel-app-results.png' alt='Laravel app results of query to Machine Learning model'>
+
+## Deploying to Production
+
+Honestly, my experiences with local testing led me to conclude that this is not an app I would want to deploy to production--the memory usage requirements are simply too high, at least for my lowest tier DigitalOcean droplet.
+
+If you did decide to push this app (or a similar one) to production, please note that our trained Machine Learning model is too large of a file to be uploaded to Github:
+
+<img src='images/github-will-reject-trained-ml-model.png' alt='Trained Machine Learning model is too large to be uploaded to Github'>
+
+So you'll want to be sure to add `resources/ml/` to your `.gitignore` file. 
+
+Because that will prevent automatic deployment of the trained model to your production server, you'll have to manually copy `bbc-nb.phpml` to the production server via `scp` or a similar utility.
+
+## Final Thoughts
+
+The **PHP-AI/PHP-ML** is an impressive library and proof-of-concept for performing Machine Learning in PHP, but perhaps it's not quite ready for integration with **Laravel** web apps (or deployment to the web in general). The memory requirements to run Machine Learning algorithms such as Support Vector Machines (which is what we used in the classification example) are more than we probably want running on a small web server.
+
+All of the official examples provided with the library are for command line PHP scripts. As an experiment, I created a command line PHP script in the same directory as our `ClassifierController`. If you want to try the same, create the following file:
+
+```
+C:\xampp\htdocs\e15\classifier\app\Http\Controllers\command-line-classier.php
+```
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+ini_set('memory_limit', '2048M');
+
+use Illuminate\Http\Request;
+use Arr;
+use Str;
+
+use Phpml\ModelManager;
+
+include '../../../vendor/autoload.php';
+
+$articleText = "Canada's multi-billion-dollar relief package to respond to the coronavirus slowdown has passed in the Senate.  It allows the government to spend C$82bn ($57bn, £48bn) in emergency aid and economic stimulus.  The bill received approval on Wednesday with support from all parties, after amendments that removed provisions giving cabinet unprecedented powers.  The bill is scheduled to get Royal Assent later on Wednesday.  Legislators passed the package, worth about 3% of the country's GDP, after a debate in the House of Commons that went into the early morning hours.  Prime Minister Justin Trudeau had promised to push the bill through parliament this week.      Canadian PM Trudeau's wife tests positive for coronavirus  Local governments have been increasing social-distancing measures to stem the spread of coronavirus, which has led thousands of businesses to close their doors.  The federal government has received nearly one million claims for unemployment benefits last week, which is equivalent to about 5%";
+
+        # Import saved Machine Learning model from file
+        $modelManager = new ModelManager();
+        $model = $modelManager->restoreFromFile('../../../resources/ml/bbc-nb.phpml');
+$start = microtime(true);
+        # Run our pre-trained model on the user-provided string of text
+        $predicted = $model->predict([$articleText])[0];
+$stop = microtime(true);
+
+echo 'Time: ' . round($stop - $start, 4) . 's'. PHP_EOL;
+echo $predicted;
+```
+Note that I hard-coded a string of text that I copied and pasted from a news article so I'd have something to feed to my classifer.
+
+Run it from the command line like this:
+
+```
+λ cd C:\xampp\htdocs\e15\classifer\app\Http\Controllers
+λ php command-line-classier.php
+```
+You should see something like the following output:
+
+<img src='images/command-line-results.png' alt='Results of running Machine Learning app from the php command line'>
+
+Note that I didn't have to specify a different runtime memory limit, because I already hardcoded the increased memory limit in `command-line-classifier.php`. Two different ways to achieve a similar result.
+
+Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results, I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of (Jupyter Notebooks)[https://jupyter.org/], (TensorFlow)[https://www.tensorflow.org/], and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the PHP-AI/PHP-ML library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
+
+If this has piqued your interest in Machine Learning, (Kaggle)[https://www.kaggle.com/] is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations no less). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
+
+## Common Issues
 
 You might receive an error message like this when testing your **Laravel** app locally:
 
@@ -441,33 +535,6 @@ On my Windows 10 laptop, it turned out this folder was marked "read only", all I
 And then make sure computer users have write permissions to this folder as well:
 
 <img src='images/give-laptop-users-full-control-over-var.png' alt='Making sure computer users have write access to var/'>
-
-After apply those changes, let's try our web app again:
-
-<img src='images/out-of-memory-laravel-app.png' alt='Even with pre-trained ML model, Laravel app runs out of memory'>
-
-Right. That didn't go as we expected. Time to modify our `ClassifierController.php` using the advice found [here](https://haydenjames.io/understanding-php-memory_limit/):
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Http\Controllers;
-
-ini_set('memory_limit', '2048M');
-```
-After which our app should have plenty of memory to complete the text processing.
-
-## Deploying to Production
-
-To Do...
-
-Please note that our trained Machine Learning model is too large of a file to be uploaded to Github:
-
-<img src='images/github-will-reject-trained-ml-model.png' alt='Trained Machine Learning model is too large to be uploaded to Github'>
-
-As a result, we will have to manually place this on our production server via `scp`.
 
 ## Sources
 + To
