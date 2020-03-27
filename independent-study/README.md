@@ -132,7 +132,7 @@ C:\xampp\htdocs\e15\classifier\database
 ```
 Now that we have our dataset, it's time to write some PHP. Here's where we reach another dilemma: do we want to do the training and testing of our Machine Learning model within a Laravel Controller, which will lead to a very slow and unpleasant browsing experience for users of our web app, or is there a smoother way to do this?
 
-Fortunately, there is. The PHP-ML library allows us to write command line PHP to train and test our model, then save the trained model to a file that we can import into a Laravel Controller...the already trained model will take about 1 second to run, vice a much longer run time. (The difference will become clear as I provide some benchmarks on my Hewlett Packard Notebook 15-da1005dx).
+Fortunately, there is. The PHP-ML library allows us to write command line PHP to train and test our model, then save the trained model to a file that we can import into a Laravel Controller...the already trained model will take about 1 second to run, vice a much longer run time, almost a minute as you'll see later on.
 
 Since we installed the PHP-ML library within our Laravel app, let's create our command line PHP Machine Learning model training and testing code within our Laravel directory. I think a reasonable file location to house this file that we're going to run from the command line and not make publicly accessible would be within a newly created directory:
 
@@ -147,7 +147,7 @@ Now to write our Machine Learning code. (Or in our case, copy the example found 
 
 ## Training and Testing our Machine Learning Model from the command line
 
-First, this is what my classification-model.php file looks like:
+First, this is what my `classification-model.php` file looks like:
 
 ```php
 <?php
@@ -194,7 +194,7 @@ And now to set it loose on that BBC data we downloaded earlier.
 ```
 λ php -d memory_limit=-1 classification-model.php
 ```
-Note that I'm running the script from the command line, and that I've removed PHP's built-in memory limit (normally not a good idea, but this Machine Learning, and it's very memory intensive). Where did I learn this trick? [StackOverflow](https://stackoverflow.com/a/36000650), of course. At any rate, we're not doing something so dangerous on a production server, and our intent is to save the trained model to a file, `bbc-nb.phpml` and then run it within a Laravel Controller (without increasing any built-in PHP memory limits), so it should be OK.
+Note that I'm running the script from the command line, and that I've removed PHP's built-in memory limit (normally not a good idea, but this is Machine Learning, and it's very memory intensive). Where did I learn this trick? [StackOverflow](https://stackoverflow.com/a/36000650), of course. At any rate, we're not doing something so dangerous on a production server, and our intent is to save the trained model to a file, `bbc-nb.phpml` and then run it within a Laravel Controller, so it should be OK.
 
 Unfortunately, on my laptop, there just isn't enough memory to train our model:
 
@@ -205,15 +205,15 @@ One way to look for memory leaks or inefficiencies in your code is to insert sta
 ```php
 echo memory_get_usage() / 1048576 . ' MB memory allocated after training' . PHP_EOL;
 ```
-These statements, for example, allowed me to pinpoint that my script ran out of memory before my model could be trained. That's a shame, but I've got an HP laptop with 16GB of RAM, not a supercomputer (not that you need a supercomputer to do Machine Learning).
+These statements, for example, allowed me to pinpoint that my script ran out of memory on my Windows laptop before my model could be trained. That's a shame, but I've got an HP laptop with 16GB of RAM, not a supercomputer (not that you need a supercomputer to do Machine Learning).
 
-My nerd computer to the rescue! I pushed my classifier project to Github, then cloned it on my more capable desktop machine. Running our classification-model.php again yielded different and much more satisfying results:
+My nerd computer to the rescue! I pushed my classifier project to Github, then cloned it on my more capable desktop machine. Running `classification-model.php` again yielded different and much more satisfying results:
 
 <img src='images/model-trained-on-bsd.png' alt='Model had plenty of memory to run on my desktop'>
 
-Note that it took just under 54 seconds to train and test our model on my FreeBSD machine, but the memory consumption wasn't actually that high (less than 2 GB of RAM)... It's possible upgrading the PHP version on my Windows laptop or otherwise tinkering with the settings would have allowed me to overcome the out of memory error.
+Note that it took just under 54 seconds to train and test our model on my FreeBSD machine, but the memory consumption wasn't actually that high (less than 2 GB of RAM)... It's possible upgrading the PHP version on my Windows laptop or otherwise tinkering with the settings would have allowed me to overcome the out of memory error, although that system on inspection did seem to be pretty tapped out on memory resources.
 
-The model had 97% accuracy at classifying our test data, which is not bad at all. And, importantly for our **Laravel** web app, our trained model was saved to a file, __bbc-nb.phpml__, that we can load within a Laravel Controller and use to process user input (since it would be pretty poor form for a web app to burn through over 1 GB of server RAM *and* take over 53 seconds to return results to the user!).
+The model had 97% accuracy at classifying our test data, which is not bad at all. And, importantly for our **Laravel** web app, our trained model was saved to a file, `bbc-nb.phpml`, that we can load within a Laravel Controller and use to process user input (since it would be pretty poor form for a web app to burn through over 1 GB of server RAM *and* take over 53 seconds to return results to the user!).
 
 But what's inside our computer-generated "black box"?
 
@@ -513,9 +513,9 @@ You should see something like the following output:
 
 Note that I didn't have to specify a different runtime memory limit, because I already hardcoded the increased memory limit in `command-line-classifier.php`. Two different ways to achieve a similar result.
 
-Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results, I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the PHP-AI/PHP-ML library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
+Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results, I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the **PHP-AI/PHP-ML** library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
 
-If this has piqued your interest in Machine Learning, [Kaggle](https://www.kaggle.com/) is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations no less). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
+If this has piqued your interest in Machine Learning, [Kaggle](https://www.kaggle.com/) is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
 
 ## Common Issues
 
@@ -546,5 +546,7 @@ And then make sure computer users have write permissions to this folder as well:
 + [Github code repository for PHP-AI/PHP-ML BBC News Classifier example](https://github.com/php-ai/php-ml-examples/blob/master/classification/bbc.php)
 + [Github code repository for alternate PHP-AI/PHP-ML BBC News Classifier example](https://github.com/php-ai/php-ml-examples/blob/master/classification/bbcPipeline.php)
 + [StackOverflow answer to PHP memory limit error](https://stackoverflow.com/a/36000650)
++ [PHP Manual documentation on memory_get_usage](https://www.php.net/manual/en/function.memory-get-usage.php)
++ [PHP Manual documentation on reserved constant PHP_EOL](https://www.php.net/manual/en/reserved.constants.php)
 + [Blog Post on alternative way to increase PHP memory limit for a single file](https://haydenjames.io/understanding-php-memory_limit/)
 + [Github Issues Forum for PHP-AI/PHP-ML project](https://github.com/php-ai/php-ml/issues/171)
