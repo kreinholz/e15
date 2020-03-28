@@ -552,7 +552,13 @@ And then make sure computer users have write permissions to this folder as well:
 
 Although odds are you don't have a FreeBSD local development machine, these are the steps I used to transfer my development code from my Windows laptop over:
 
-Install apache24 on FreeBSD and enable it. This involves at a minimum adding two entries to `/etc/rc.conf`, but I'm not going to go into details since again I highly doubt most of you have a FreeBSD machine lying around and are itching to test this. If you do have a FreeBSD machine, I'm assuming you know how to get an Apache server up and running on it.
+Install apache24 on FreeBSD and enable it. This involves at a minimum adding the following lines to `/etc/rc.conf`:
+
+```
+apache24_enable="YES"
+apache24_http_accept_enable="YES"
+```
+There are some additional configuration tweaks I did on my FreeBSD Apache server, but I highly doubt these details will be interesting to the average reader. If you do have a FreeBSD machine, I'm assuming you know how to get an Apache server up and running on it.
 
 Clone the Github repository containing our development code to the FreeBSD system (it's OK to do a manual download of .zip file rather than doing a `git pull`), copy application `classifier/` to `/usr/local/www/apache24/data/`
 
