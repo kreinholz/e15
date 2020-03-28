@@ -444,13 +444,27 @@ ini_set('memory_limit', '2048M');
 ```
 After which our app should have plenty of memory to complete the text processing.
 
-Unfortunately for me, my laptop once again proved to have insufficient memory, so I was forced to run the Laravel app from my nerd computer using a local FreeBSD apache24 web server I set up for testing purposes:
+Unfortunately for me, my laptop once again proved to have insufficient memory, so I was forced to run the Laravel app from my nerd computer using a local FreeBSD apache24 web server I set up for testing purposes. Here is the first successful result page I got after copying and pasting in the text of a BBC News article:
 
-<img src='images/laravel-app-results.png' alt='Laravel app results of query to Machine Learning model'>
+<img src='images/classifier-results-freebsd.png' alt='Laravel app results of query to Machine Learning model'>
+
+And for good measure, I tried it again on a completely different article:
+
+<img src='images/classifier-results-freebsd-alt-article.png' alt='Laravel app results of a different query to Machine Learning model'>
+
+We don't just have to run it on Google's Chrome web browser. This is what a results page looks like in Firefox:
+
+<img src='images/classifier-results-freebsd-firefox.png' alt='Laravel app results of a query to Machine Learning model submitted via Firefox instead of Chrome'>
+
+But note that submitting our query via GET rather than POST can yield an error if the article text is too long:
+
+<img src='images/get-vice-post-can-lead-to-this-error.png' alt='A long query string submitted via GET can result in an error'>
+
+So a good refactor of this app would involve replacing the `/classifer` GET route with a POST route (don't forget to add a hidden `@csrf` field to your Blade template).
 
 ## Deploying to Production
 
-Honestly, my experiences with local testing led me to conclude that this is not an app I would want to deploy to production--the memory usage requirements are simply too high, at least for my lowest tier DigitalOcean droplet.
+Honestly, my experiences with local testing led me to conclude that this is not an app I would want to deploy to production--the memory usage requirements are simply too high, at least for my lowest tier DigitalOcean droplet. If you have a better server, feel free to try!
 
 If you did decide to push this app (or a similar one) to production, please note that our trained Machine Learning model is too large of a file to be uploaded to Github:
 
@@ -458,7 +472,7 @@ If you did decide to push this app (or a similar one) to production, please note
 
 So you'll want to be sure to add `resources/ml/` to your `.gitignore` file. 
 
-Because that will prevent automatic deployment of the trained model to your production server, you'll have to manually copy `bbc-nb.phpml` to the production server via `scp` or a similar utility.
+Moreover, `bbc-nb.phpml` hard codes the directory it was run from, so unless your directory tree is identical on your development and production servers (unlikely), it's better to run the command line `classification-model.php` script on your production server to generate this file, rather than attempting to copy `bbc-nb.phpml` to the production server via `scp` or a similar utility.
 
 ## Final Thoughts
 
@@ -513,7 +527,7 @@ You should see something like the following output:
 
 Note that I didn't have to specify a different runtime memory limit, because I already hardcoded the increased memory limit in `command-line-classifier.php`. Two different ways to achieve a similar result.
 
-Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results, I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the **PHP-AI/PHP-ML** library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
+Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results (success on my FreeBSD desktop, failure on my Windows 10 laptop due to RAM limitations), I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the **PHP-AI/PHP-ML** library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
 
 If this has piqued your interest in Machine Learning, [Kaggle](https://www.kaggle.com/) is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
 
@@ -535,6 +549,58 @@ On my Windows 10 laptop, it turned out this folder was marked "read only", all I
 And then make sure computer users have write permissions to this folder as well:
 
 <img src='images/give-laptop-users-full-control-over-var.png' alt='Making sure computer users have write access to var/'>
+
+Although odds are you don't have a FreeBSD local development machine, these are the steps I used to transfer my development code from my Windows laptop over:
+
+Install apache24 on FreeBSD and enable it. This involves at a minimum adding two entries to `/etc/rc.conf`, but I'm not going to go into details since again I highly doubt most of you have a FreeBSD machine lying around and are itching to test this. If you do have a FreeBSD machine, I'm assuming you know how to get an Apache server up and running on it.
+
+Clone the Github repository containing our development code to the FreeBSD system (it's OK to do a manual download of .zip file rather than doing a `git pull`), copy application `classifier/` to `/usr/local/www/apache24/data/`
+
+Edit `/usr/local/etc/apache24/extra/httpd-vhosts.conf` and make sure there's an entry for the app:
+
+```html
+<VirtualHost *:80>
+        ServerName classifier.loc
+        DocumentRoot /usr/local/www/apache24/data/classifier/public
+        <Directory /usr/local/www/apache24/data/classifier/public>
+                Options Indexes FollowSymlinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+</VirtualHost>
+```
+Edit `/etc/hosts` and make sure there's an entry for the app:
+
+```
+127.0.0.1 classifer.loc
+```
+Change write permissions to the following directories (same as Mac users have to do):
+
+```
+sudo chmod -R 777 storage 
+sudo chmod -R 777 bootstrap/cache
+```
+From our application directory root of `/usr/local/www/apache24/data/classifier` or whatever your application root is (for example, it might be `data/e15/classifier`), run the following commands:
+
+```
+composer install
+cp .env.example .env
+php artisan key:generate
+sudo service apache24 restart
+```
+
+The Laravel app should now be accessible from a web browser by going to:
+
+`http://classifier.loc`
+
+While at this point we can run the `command-line-classifier.php` script, two more permissions-related changes have to be made before the **Laravel** web app will function properly:
+
+```
+sudo chown -R www /usr/local/www/apache24/data/classifier/storage
+sudo chown -R www /usr/local/www/apache24/data/classifier/vendor
+```
+Where `www` is the name of the Apache user on FreeBSD. Without changing the ownership of these directories, a permissions error similar to the Windows error displayed at the beginning of this section will crop up on FreeBSD.
 
 ## Sources
 + [Dr. Andrew Ng's course on Machine Learning](https://www.coursera.org/learn/machine-learning)
