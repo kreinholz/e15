@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'ClassifierController@index');
-Route::get('/classify', 'ClassifierController@classify');
+Route::post('/classify', 'ClassifierController@classify');
