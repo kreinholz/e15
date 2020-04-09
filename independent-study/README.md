@@ -196,7 +196,11 @@ And now to set it loose on that BBC data we downloaded earlier.
 ```
 Note that I'm running the script from the command line, and that I've removed PHP's built-in memory limit (normally not a good idea, but this is Machine Learning, and it's very memory intensive). Where did I learn this trick? [StackOverflow](https://stackoverflow.com/a/36000650), of course. At any rate, we're not doing something so dangerous on a production server, and our intent is to save the trained model to a file, `bbc-nb.phpml` and then run it within a Laravel Controller, so it should be OK.
 
-Unfortunately, on my laptop, there just isn't enough memory to train our model:
+Running the latest version of XAMPP (7.4.4) on my Windows laptop, the script ran successfully:
+
+<img src='images/model-trained-on-windows.png' alt='Model trained on Windows'>
+
+However, a previous attempt to run this same script with XAMPP (7.3.1) installed resulted in failure:
 
 <img src='images/out-of-memory.png' alt='Out of memory error on my laptop'>
 
@@ -205,30 +209,30 @@ One way to look for memory leaks or inefficiencies in your code is to insert sta
 ```php
 echo memory_get_usage() / 1048576 . ' MB memory allocated after training' . PHP_EOL;
 ```
-These statements, for example, allowed me to pinpoint that my script ran out of memory on my Windows laptop before my model could be trained. That's a shame, but I've got an HP laptop with 16GB of RAM, not a supercomputer (not that you need a supercomputer to do Machine Learning).
+These statements can help narrow down the most memory intensive portions of the script and identify possible errors/inefficiencies.
 
-My nerd computer to the rescue! I pushed my classifier project to Github, then cloned it on my more capable desktop machine. Running `classification-model.php` again yielded different and much more satisfying results:
+Prior to upgrading my version of XAMPP, as an experiment I pushed my classifier project to Github, then cloned it onto another machine. Running `classification-model.php` again yielded different and much more satisfying results:
 
 <img src='images/model-trained-on-bsd.png' alt='Model had plenty of memory to run on my desktop'>
 
-Note that it took just under 54 seconds to train and test our model on my FreeBSD machine, but the memory consumption wasn't actually that high (less than 2 GB of RAM)... It's possible upgrading the PHP version on my Windows laptop or otherwise tinkering with the settings would have allowed me to overcome the out of memory error, although that system on inspection did seem to be pretty tapped out on memory resources.
+Note that it took just under 54 seconds to train and test our model on my FreeBSD machine, but the memory consumption wasn't actually that high (less than 2 GB of RAM)... My Windows laptop was fully capable of running the script, provided the right version of XAMPP was installed and my temporary lifting of memory usage limits was obeyed. The model had 97% accuracy at classifying our test data during the run on my desktop. Contrast that with a run time of slightly over 59 seconds on my laptop and a 98% accuracy rate. Why the disparity in accuracy rate? We *split* our data randomly into training and testing data, so that likely accounts for the slightly different results on different runs. At any rate, neither result is a bad one for a machine learning model. 
 
-The model had 97% accuracy at classifying our test data, which is not bad at all. And, importantly for our **Laravel** web app, our trained model was saved to a file, `bbc-nb.phpml`, that we can load within a Laravel Controller and use to process user input (since it would be pretty poor form for a web app to burn through over 1 GB of server RAM *and* take over 53 seconds to return results to the user!).
+Importantly for our **Laravel** web app, our trained model was saved to a file, `bbc-nb.phpml`, that we can load within a Laravel Controller and use to process user input (since it would be pretty poor form for a web app to burn through over 1 GB of server RAM *and* take over 53 seconds to return results to the user!).
 
 But what's inside our computer-generated "black box"?
 
 <img src='images/bbc-nb-ml-generated-file.png' alt='Machine Learning generated model'>
 
-Well...glad that clears things up! The file is approximately 250 MB in size, so it's no lightweight, either. I copied it from its save location on my FreeBSD machine to its corresponding location on my Windows development machine:
+Well...glad that clears things up! The file is approximately 250 MB in size, so it's no lightweight, either. Note that the file, `bbc-nb.phpml`, is saved to the following directory:
 
 ```
 C:\xampp\htdocs\e15\classifier\resources\ml
 ```
-Now we're ready to return to our **Laravel** app and direct user input to the trained Machine Learning model so we can dazzle visitors to our site with our text classification magic.
+Now that we've trained our machine learning model, we're ready to return to our **Laravel** app and direct user input to the trained model so we can dazzle visitors to our site with our text classification magic.
 
 ## Incorporating our trained Machine Learning model into our Laravel app
 
-Now that we've written (or for illustrative purposes, *copied*) and trained our Machine Learning text classification model, and saved it to a file so we can leverage its power *without* the need to re-train it, it's time to incorporate the model into our **Laravel** app.
+Now that we've written and trained our Machine Learning text classification model, and saved it to a file so we can leverage its power *without* the need to re-train it, it's time to incorporate the model into our **Laravel** app.
 
 I'm not going to rehash the entire process of setting up a **Laravel** app, so you should instead refer to [Week 5](https://hesweb.dev/e15/week/5), [Week 6](https://hesweb.dev/e15/week/6), and [Week 7](https://hesweb.dev/e15/week/7) of the CSCI E-15 notes and lectures.
 
@@ -252,7 +256,7 @@ C:\xampp\htdocs\e15\classifier\routes\web.php
 */
 
 Route::get('/', 'ClassifierController@index');
-Route::get('/classify', 'ClassifierController@classify');
+Route::post('/classify', 'ClassifierController@classify');
 ```
 ```
 C:\xampp\htdocs\e15\classifier\app\Http\Controllers\ClassifierController.php
@@ -332,9 +336,12 @@ C:\xampp\htdocs\e15\classifier\resources\views\classifer.blade.php
             Copy and paste the text of a news article to have AI classify it into a category.
         </p>
         
-        <form method='GET' action='/classify'>
+        <form method='POST' action='/classify'>
+
+            {{ csrf_field() }}
+
             <label for='inputString'>Article text:</label>
-            <input type='textarea' rows='20' cols='50' id='articleText' name='articleText' value='{{ old('articleText', $articleText) }}'> 
+            <textarea name='articleText'>{{ old('articleText', $articleText) }}</textarea>
             <p></p>    
             @if($errors->get('articleText'))
                 <div class='error'>This field must be filled out with plain text (no images) from a news article.</div>
@@ -411,10 +418,6 @@ html, body {
     margin-bottom: 30px;
 }
 
-textarea {
-    resize: vertical;
-}
-
 /* The following error class comes from Bootstrap
    Ref: https://github.com/twbs/bootstrap/blob/master/dist/css/bootstrap.css */
 .error {
@@ -444,11 +447,15 @@ ini_set('memory_limit', '2048M');
 ```
 After which our app should have plenty of memory to complete the text processing.
 
-Unfortunately for me, my laptop once again proved to have insufficient memory, so I was forced to run the Laravel app from my nerd computer using a local FreeBSD apache24 web server I set up for testing purposes. Here is the first successful result page I got after copying and pasting in the text of a BBC News article:
+Here is the first successful result page I got after copying and pasting in the text of a BBC News article:
+
+<img src='images/classifer-results.png' alt='Laravel app results of query to Machine Learning model'>
+
+And some older runs from my desktop machine, a FreeBSD system running an apache24 web server I set up for testing purposes as an alternative to XAMPP on Windows, beginning with this article:
 
 <img src='images/classifier-results-freebsd.png' alt='Laravel app results of query to Machine Learning model'>
 
-And for good measure, I tried it again on a completely different article:
+Results when running the model on a third article:
 
 <img src='images/classifier-results-freebsd-alt-article.png' alt='Laravel app results of a different query to Machine Learning model'>
 
@@ -456,11 +463,9 @@ We don't just have to run it on Google's Chrome web browser. This is what a resu
 
 <img src='images/classifier-results-freebsd-firefox.png' alt='Laravel app results of a query to Machine Learning model submitted via Firefox instead of Chrome'>
 
-But note that submitting our query via GET rather than POST can yield an error if the article text is too long:
+Note that we set our app up to submit queries via POST. The following illustrates why--submitting our query via GET can yield an error if the article text is too long:
 
 <img src='images/get-vice-post-can-lead-to-this-error.png' alt='A long query string submitted via GET can result in an error'>
-
-So a good refactor of this app would involve replacing the `/classifer` GET route with a POST route (don't forget to add a hidden `@csrf` field to your Blade template).
 
 ## Deploying to Production
 
@@ -476,7 +481,7 @@ Moreover, `bbc-nb.phpml` hard codes the directory it was run from, so unless you
 
 ## Final Thoughts
 
-The **PHP-AI/PHP-ML** is an impressive library and proof-of-concept for performing Machine Learning in PHP, but perhaps it's not quite ready for integration with **Laravel** web apps (or deployment to the web in general). The memory requirements to run Machine Learning algorithms such as Support Vector Machines (which is what we used in the classification example) are more than we probably want running on a small web server.
+The **PHP-AI/PHP-ML** is an impressive library and proof-of-concept for performing Machine Learning in PHP, and relatively easy to integrate with **Laravel** web apps. However, we should be cognizant of the memory requirements to run Machine Learning algorithms such as Support Vector Machines (which is what we used in the classification example), which may be more than we want running on a small web server.
 
 All of the official examples provided with the library are for command line PHP scripts. As an experiment, I created a command line PHP script in the same directory as our `ClassifierController`. If you want to try the same, create the following file:
 
@@ -527,7 +532,7 @@ You should see something like the following output:
 
 Note that I didn't have to specify a different runtime memory limit, because I already hardcoded the increased memory limit in `command-line-classifier.php`. Two different ways to achieve a similar result.
 
-Although this journey into incorporating Machine Learning written in native PHP into a **Laravel** web app led to mixed results (success on my FreeBSD desktop, failure on my Windows 10 laptop due to RAM limitations), I still think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that ground our **Laravel** app to a halt can be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the **PHP-AI/PHP-ML** library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
+This was a fun journey incorporating Machine Learning written in native PHP into a **Laravel** web app, and I think Machine Learning is extremely cool! As mentioned earlier, there are some extremely robust Machine Learning libraries written in Python, and some of the memory intensive tasks that might make us shy away from hosting a **Laravel** app with "in-house" Machine Learning capabilities courtsey of the **PHP-AI/PHP-ML** library can alternatively be done in the cloud courtesy of [Jupyter Notebooks](https://jupyter.org/), [TensorFlow](https://www.tensorflow.org/), and similar technologies. If you want to deploy a **Laravel** web app that incorporates Machine Learning, it is not necessary to use the **PHP-AI/PHP-ML** library--you can access TensorFlow's APIs from your app, or access APIs served by a simple **Flask** app written in Python.
 
 If this has piqued your interest in Machine Learning, [Kaggle](https://www.kaggle.com/) is a great place to get your hands dirty building Machine Learning applications (in the cloud, without my laptop's RAM limitations). Kaggle offers cash prices for a number of Machine Learning challenges/competitions, so not only is it good practice, it can also be a money-maker!
 

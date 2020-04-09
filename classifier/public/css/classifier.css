@@ -49,10 +49,6 @@ html, body {
     margin-bottom: 30px;
 }
 
-textarea {
-    resize: vertical;
-}
-
 /* The following error class comes from Bootstrap
    Ref: https://github.com/twbs/bootstrap/blob/master/dist/css/bootstrap.css */
 .error {
