@@ -449,7 +449,7 @@ After which our app should have plenty of memory to complete the text processing
 
 Here is the first successful result page I got after copying and pasting in the text of a BBC News article:
 
-<img src='images/classifer-results.png' alt='Laravel app results of query to Machine Learning model'>
+<img src='images/classifier-results.png' alt='Laravel app results of query to Machine Learning model'>
 
 And some older runs from my desktop machine, a FreeBSD system running an apache24 web server I set up for testing purposes as an alternative to XAMPP on Windows, beginning with this article:
 
