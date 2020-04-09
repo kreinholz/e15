@@ -469,15 +469,86 @@ Note that we set our app up to submit queries via POST. The following illustrate
 
 ## Deploying to Production
 
-Honestly, my experiences with local testing led me to conclude that this is not an app I would want to deploy to production--the memory usage requirements are simply too high, at least for my lowest tier DigitalOcean droplet. If you have a better server, feel free to try!
-
-If you did decide to push this app (or a similar one) to production, please note that our trained Machine Learning model is too large of a file to be uploaded to Github:
+Before we attempt to deploy to production, please note that our trained Machine Learning model is too large of a file to be uploaded to Github:
 
 <img src='images/github-will-reject-trained-ml-model.png' alt='Trained Machine Learning model is too large to be uploaded to Github'>
 
 So you'll want to be sure to add `resources/ml/` to your `.gitignore` file. 
 
 Moreover, `bbc-nb.phpml` hard codes the directory it was run from, so unless your directory tree is identical on your development and production servers (unlikely), it's better to run the command line `classification-model.php` script on your production server to generate this file, rather than attempting to copy `bbc-nb.phpml` to the production server via `scp` or a similar utility.
+
+We'll follow the [Course notes on deploying to DigitalOcean](https://hesweb.dev/e15/notes/laravel/deploy-to-digital-ocean) to deploy our Machine Learning **Laravel** app to production.
+
+```
+λ ssh root@134.209.3.45
+```
+And once logged in, navigate to our production copy of our Github repository and sync to the latest changes:
+
+```
+root@e28:~# cd /var/www/html/e15
+root@e28:/var/www/html/e15# git pull
+```
+We then have to install everything from the `vendor/` directory excluded by our `.gitignore` file onto our production server:
+
+```
+root@e28:/var/www/html/e15/classifier# composer install --no-dev
+```
+And set up our **Laravel** app to run from DigitalOcean:
+
+```
+root@e28:/var/www/html/e15/classifier# cp .env.example .env
+root@e28:/var/www/html/e15/classifier# php artisan key:generate
+```
+Fix our permissions that we didn't have to worry about on Windows:
+
+```
+root@e28:/var/www/html/e15/classifier# chown -R www-data storage
+root@e28:/var/www/html/e15/classifier# chown -R www-data bootstrap/cache
+root@e28:/var/www/html/e15/classifier# chown -R www-data vendor
+```
+That last line isn't in the course notes, but it's something I discovered through trial-and-error to be necessary when working with the **PHP-AI/PHP-ML** library in a **Laravel** project.
+
+Make sure to add a virtual host for our app:
+
+```
+vi /etc/apache2/sites-enabled/000-default.conf
+```
+And add something like this:
+
+```html
+<VirtualHost *:80>
+        ServerName classifier.kreinholz.me
+        DocumentRoot "/var/www/html/e15/classifier/public"
+        <Directory "/var/www/html/e15/classifier/public">
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+```
+Save changes and exit, then:
+
+```
+root@e28:/var/www/html/e15/classifier# service apache2 restart
+```
+Now, we can't simply copy `bbc-nb.phpml` over to our production server because of the hardcoded paths, we have to train the model once on production:
+
+```
+root@e28:/var/www/html/e15/classifier# cd resources/ml
+root@e28:/var/www/html/e15/classifier/resources/ml# php -d memory_limit=-1 classification-model.php
+```
+After which, if all goes well, you should see something like this:
+
+<img src='images/model-trained-on-production.png' alt='Our Machine Learning model has been trained on our production server'>
+
+As you can see, it was a bit slower than either my Windows laptop or my FreeBSD desktop machine, but the lowest tier DigitalOcean droplet was still able to run it.
+
+At this point, we can logout of our DigitalOcean server:
+
+```
+root@e28:/var/www/html/e15/classifier/resources/ml# exit
+```
+Now we should be able to access our app, and use it, from any web browser by visiting `http://classifier.kreinholz.me`.
+
+<img src='images/classifier-results-ipad.png' alt='Using our Machine Learning web app from an iPad on production'>
 
 ## Final Thoughts
 
