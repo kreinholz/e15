@@ -79,28 +79,15 @@ class BookController extends Controller
         $searchTerms = $request->input('searchTerms', null);
         $searchType = $request->input('searchType', null);
 
-        # Load our book data using PHP's file_get_contents
-        # We specify our books.json file path using Laravel's database_path helper
-        $bookData = file_get_contents(database_path('books.json'));
-    
-        # Convert the string of JSON text we loaded from books.json into an
-        # array using PHP's built-in json_decode function
-        $books = json_decode($bookData, true);
-    
-        # This algorithm will filter our $books down to just the books where either
-        # the title or author ($searchType) matches the keywords the user entered ($searchTerms)
-        # The search values are convereted to lower case using PHP's built in strtolower function
-        # so that the search is case insensitive
-        $searchResults = array_filter($books, function ($book) use ($searchTerms, $searchType) {
-            return Str::contains(strtolower($book[$searchType]), strtolower($searchTerms));
-        });
-
-        # The above array_filter accomplishes the same thing this for loop would
-        // foreach ($books as $slug => $book) {
-        //     if (strtolower($book[$searchType]) == strtolower($searchTerms)) {
-        //         $searchResults[$slug] = $book;
-        //     }
-        // }
+        # Query the database for the input searchTerms, either by title or author
+        # depending on the value of searchType--note, we don't have to worry about
+        # case-sensitivity, as our database table is utf8mb4_unicode_ci (case insensitive)
+        if ($searchType == 'title') {
+            $searchResults = Book::where('title', 'LIKE', '%' . $searchTerms . '%')->get();
+        }
+        elseif ($searchType == 'author') {
+            $searchResults = Book::where('author', 'LIKE', '%' . $searchTerms . '%')->get();
+        }
 
         # Redirect back to the form with data/results stored in the session
         # Ref: https://laravel.com/docs/redirects#redirecting-with-flashed-session-data
