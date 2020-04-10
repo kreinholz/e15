@@ -70,8 +70,8 @@
            {{ Str::plural('Result', count($searchResults)) }}:
 
             <ul>
-                @foreach($searchResults as $slug => $book)
-                <li><a href='/books/{{ $slug }}'> {{ $book['title'] }}</a></li>
+                @foreach($searchResults as $book)
+                <li><a href='/books/{{ $book->slug }}'> {{ $book->title }}</a></li>
                 @endforeach
             </ul>
         </div>
