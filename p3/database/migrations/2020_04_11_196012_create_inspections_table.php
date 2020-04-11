@@ -14,10 +14,10 @@ class CreateInspectionsTable extends Migration
     public function up()
     {
         Schema::create('inspections', function (Blueprint $table) {
-            # Auto-incrementing UNSIGNED BIGINT (primary key) equivalent column.
+            # Auto-incrementing UNSIGNED BIGINT (primary key) equivalent column
             $table->bigIncrements('id');
 
-            # Adds nullable created_at and updated_at TIMESTAMP equivalent columns with precision (total digits).
+            # Adds nullable created_at and updated_at TIMESTAMP equivalent columns with precision (total digits)
             $table->timestamps();
 
             # Rail Transit Agency VARCHAR
@@ -28,6 +28,9 @@ class CreateInspectionsTable extends Migration
 
             # Inspection due date DATE
             $table->date('inspection_date');
+
+            # Checklist FOREIGN KEY from checklists table
+            $table->foreign('checklist')->references('id')->on('checklists');
         });
     }
 

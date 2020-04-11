@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+# Lots TO DO here--set up POST route for creating new inspections, spoofed PUT and DELETE routes,
+# authentication for User management, etc.
