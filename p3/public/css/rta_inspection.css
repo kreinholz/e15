@@ -1,0 +1,266 @@
+/* The following came from https://wisconsindot.gov/_catalogs/masterpage/AgencyTemplate1/css/styles.css */
+
+body {
+    line-height: normal;
+    font-family: "OpenSans-Regular", Verdana, Helvetica, sans-serif;
+    font-size: 14px;
+    background: #fff;
+    color: #555;
+    font-weight: normal;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+    padding: 10px;
+}
+
+#header {
+    font-size:2em;
+    color: #043C73;
+}
+
+#footer {
+    background-color: #043C73;
+    padding: 10px;
+}
+
+#s4-bodyContainer {
+    background-image: linear-gradient(to bottom, #fff, #525252 20%, #e8e8e8 70%);
+    overflow: hidden;
+    padding-bottom: 0px;
+}
+#s4-workspace {
+    overflow: auto !important;
+    line-height: normal;
+    font-family: "OpenSans-Regular", Verdana, Helvetica, sans-serif;
+    background: #dcdcdc;
+    background-color: #dcdcdc;
+    /* Default background color */
+}
+a {
+    color: #114c86;
+    text-decoration: none;
+}
+a:visited {
+    color: #114c86;
+}
+p a:hover, li a:hover, td a:hover {
+    text-decoration: underline !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Raleway-Regular", Verdana, Helvetica, sans-serif;
+    margin: 0 0 0.25em 0;
+    line-height: 1.2em;
+}
+h1 {
+    font-weight: 200;
+    color: #114c86 !important;
+}
+h2 {
+    font-size: 2em;
+    font-weight: 200;
+    color: #114c86 !important;
+}
+h3 {
+    font-size: 1.45em;
+    font-weight: 200;
+}
+h4 {
+    font-size: 1.25em;
+    line-height: 1.3em !important;
+}
+h5 {
+    font-size: 1.125em;
+}
+h6 {
+    font-size: 1em;
+}
+p, .ms-rtestate-field, .ms-rteStyle-Normal {
+    font-family: "OpenSans-Regular", Verdana, Helvetica, sans-serif !important;
+    font-size: 1em !important;
+    letter-spacing: .03em !important;
+    line-height: 1.35em !important;
+    color: #222 !important;
+    background-color: transparent;
+}
+ul, ol {
+    color: #222;
+}
+.breadcrumbs {
+    padding: 0px 0px 10px 0px;
+    font-family: "OpenSans-Regular", Verdana, Helvetica, sans-serif;
+    letter-spacing: .07em;
+    font-size: 1em;
+}
+.site-logo-no-pad {
+    padding-left: 5px;
+    padding-right: 0;
+}
+.site-title-no-pad {
+    padding: 0;
+}
+#header-content {
+    padding: 0px 0 25px 0px;
+}
+hr {
+    height: 1px;
+    border-color: #f9c218;
+    margin: .5em 0;
+}
+.glyphicon-chevron-right {
+    font-size: .75em;
+    color: #f9c218;
+    padding-left: 5%;
+}
+
+/* The following comes from E-15's Bookmark */
+
+/*----------------------------------------------------
+Nav bar
+-----------------------------------------------------*/
+nav {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline-block;
+    padding: 10px;
+}
+
+nav ul li {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+nav ul li a:link {
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    color: #18bc9c;
+    /* teel */
+}
+/*----------------------------------------------------
+Forms
+-----------------------------------------------------*/
+label,
+legend {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    text-align: left;
+    font-size: 1.2rem;
+    letter-spacing: .75px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+input[type=text],
+input[type=email],
+input[type=password],
+textarea,
+select {
+    display: block;
+    width: 100%;
+    font-size: 1.5rem;
+    padding: 3px;
+    font-family: Consolas, Courier, monospace;
+    border: 1px solid #ccc;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+    display: inline;
+}
+
+input[type='checkbox']+label,
+input[type='radio']+label {
+    display: inline;
+    font-weight: normal;
+}
+
+ul.inputs {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul.inputs label {
+    text-transform: none;
+    font-weight: normal;
+    margin: 0;
+}
+
+.input-info {
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.btn,
+button {
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+
+.error {
+    list-style-type: none;
+    margin-top: 10px;
+}
+
+.globalFormError {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 5px;
+}
+
+.success {
+    color: #3c763d;
+}
+
+.details {
+    font-size: 1.1rem;
+    font-style: italic;
+    text-align: left;
+}
+
+
+/*----------------------------------------------------
+Misc
+-----------------------------------------------------*/
+/* http://nicolasgallagher.com/micro-clearfix-hack/ */
+.cf:before,
+.cf:after {
+    content: " ";
+    /* 1 */
+    display: table;
+    /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+.cf {
+    *zoom: 1;
+}
+
+.flash-alert {
+    background-color: yellow;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+}

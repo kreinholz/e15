@@ -7,7 +7,11 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href='/css/rta_inspection.css' rel='stylesheet'>
+    <link rel="shortcut icon" href="/favicon_dot.ico" type="image/vnd.microsoft.icon" id="favicon" />
 
+    <!-- Fonts -->
+    <link href='https://fonts.googleapis.com/css2?family=Raleway&display=swap' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css2?family=Open+Sans&family=Raleway&display=swap' rel='stylesheet'>
     @yield('head')
 </head>
 
@@ -20,15 +24,19 @@
     @endif
 
     <header>
-        <a href='/'><img src='/images/bookmark-logo@2x.png' id='logo' alt='bookmark Logo'></a>
-
+        <a href='/'><img src='/images/dot_logo_shadow.png' id='logo' alt='WisDOT Logo'></a>
+        <span id='header'>Wisconsin Department of Transportation</span>
+        <h3>This is a mock-up for academic purposes, and not to be mistaken for an official
+            government website. To visit the <strong>real</strong> WisDOT Rail Transit Safety
+            Oversight website, click <a href='https://wisconsindot.gov/Pages/doing-bus/local-gov/astnce-pgms/transit/compliance/safety-rail.aspx'>here</a>.
+        </h3>
         <nav>
             <ul>
                 <li><a href='/'>Home</a></li>
-                <li><a href='/books'>All Books</a></li>
-                <li><a href='/books/create'>Add a Book</a></li>
-                <li><a href='/list'>Your list</a></li>
-                <li><a href='/support'>Support</a></li>
+                <li><a href='/checklist'>View Inspection Checklist</a></li>
+                <li><a href='/inspections/create'>Start a New Inspection</a></li>
+                <li><a href='/inspections'>List In-Progress/Completed Inspections</a></li>
+                <li><a href='/rta_safety_plan_checklist.pdf'>Manual Copy of Inspection Checklist</a></li>
             </ul>
         </nav>
     </header>
@@ -38,8 +46,9 @@
     </section>
 
     <footer>
-        &copy; WisDOT <br>
-        Questions? Email us at {{ config('mail.supportEmail') }}
+        <div id='footer'>
+            <a href='/'><img src='/images/wi_logo_footer.png' id='logo' alt='Wisconsin Logo'></a>
+        </div>
     </footer>
 
 </body>
