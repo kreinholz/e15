@@ -33,7 +33,7 @@
         <nav>
             <ul>
                 <li><a href='/'>Home</a></li>
-                <li><a href='/checklist'>View Inspection Checklist</a></li>
+                <li><a href='/checklist'>View Inspection Checklists</a></li>
                 <li><a href='/inspections/create'>Start a New Inspection</a></li>
                 <li><a href='/inspections'>List In-Progress/Completed Inspections</a></li>
                 <li><a href='/rta_safety_plan_checklist.pdf'>Manual Copy of Inspection Checklist</a></li>

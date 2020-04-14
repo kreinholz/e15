@@ -20,9 +20,8 @@ class CreateChecklistsTable extends Migration
             # Adds nullable created_at and updated_at TIMESTAMP equivalent columns with precision (total digits)
             $table->timestamps();
 
-            # Checklist contains any number of checklist_items MANY-to-MANY
-            # TO DO--troubleshoot. It appears this relationship must be set up in the Model...
-            # $table->hasMany('checklist_items');
+            # Add a title for this particular checklist, e.g. "Checklist for Reviewing the Rail Transit Agency Safety Plan"
+            $table->string('title');
         });
     }
 

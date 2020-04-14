@@ -31,6 +31,10 @@ class CreateChecklistItemsTable extends Migration
 
             # Checklist Item Comments TEXT
             $table->text('comments');
+
+            # Add foreign key associating checklist items with a checklist
+            # Ref: https://www.itsolutionstuff.com/post/laravel-one-to-many-eloquent-relationship-tutorialexample.html
+            $table->foreign('checklist_id')->references('id')->on('checklists')->onDelete('cascade');
         });
     }
 
