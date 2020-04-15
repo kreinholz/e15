@@ -15,7 +15,7 @@ class CreateChecklistsTable extends Migration
     {
         Schema::create('checklists', function (Blueprint $table) {
             # Auto-incrementing UNSIGNED BIGINT (primary key) equivalent column
-            $table->bigIncrements('id');
+            $table->id();
 
             # Adds nullable created_at and updated_at TIMESTAMP equivalent columns with precision (total digits)
             $table->timestamps();

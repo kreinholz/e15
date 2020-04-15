@@ -15,7 +15,7 @@ class CreateChecklistItemsTable extends Migration
     {
         Schema::create('checklist_items', function (Blueprint $table) {
             # Auto-incrementing UNSIGNED BIGINT (primary key) equivalent column
-            $table->bigIncrements('id');
+            $table->id();
 
             # Checklist Item Number TINYINT
             $table->tinyInteger('item_number');
@@ -32,9 +32,13 @@ class CreateChecklistItemsTable extends Migration
             # Checklist Item Comments TEXT
             $table->text('comments');
 
+            # Instantiate an unsigned new column to act as a foreign key
+            # See https://github.com/susanBuck/e15-spring20/issues/38
+            $table->bigInteger('checklist')->unsigned();
+
             # Add foreign key associating checklist items with a checklist
-            # Ref: https://www.itsolutionstuff.com/post/laravel-one-to-many-eloquent-relationship-tutorialexample.html
-            $table->foreign('checklist_id')->references('id')->on('checklists')->onDelete('cascade');
+            # See https://github.com/susanBuck/e15-spring20/issues/38
+            $table->foreign('checklist')->references('id')->on('checklists');
         });
     }
 

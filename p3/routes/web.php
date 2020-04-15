@@ -40,3 +40,4 @@ Route::delete('/inspections/{id}', 'InspectionController@destroy');
 
 # Lots TO DO here--authentication for User management, and depending on Eloquent capabilities/
 # limitations, routes for creating new checklists/adding/deleting/updating checklist items.
+Auth::routes();
