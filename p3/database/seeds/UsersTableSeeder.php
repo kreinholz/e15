@@ -12,7 +12,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        # Example users required for CSCI E-15, p3:
+        # Example users required for CSCI E-15, p3 (modified to split out name into first_name and last_name):
         $user = User::updateOrCreate(
             ['email' => 'jill@harvard.edu', 'first_name' => 'Jill', 'last_name' => 'Harvard'],
             ['password' => Hash::make('helloworld')
