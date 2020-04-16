@@ -17,7 +17,11 @@
 
 <h1>{{ $book->title }}</h1>
 
-<p>By {{ $book->author }} ({{ $book->published_year }})</p>
+@if($book->author)
+    <p>By {{ $book->author->first_name. ' ' . $book->author->last_name }}</p>
+@endif
+
+<p>({{ $book->published_year }})</p>
 
 <a href='{{ $book->purchase_url }}'>Purchase...</a>
 
@@ -26,16 +30,10 @@
     <a href='{{ $book->info_url }}'>Learn more...</a>
 </p>
 
-<a class='btn btn-primary' href='/books/{{ $book->slug }}/edit'>Edit this book</a>
-
-<form method='POST' action='/books/{{ $book->slug }}'>
-    {{ csrf_field() }}
-
-    {{  method_field('delete') }}
-
-    <input type='submit' class='btn btn-danger' value='Delete this Book'>
-</form>
-
+<ul class='bookActions'>
+    <li><a href='/books/{{ $book->slug }}/edit'><i class="fa fa-edit"></i> Edit</a>
+    <li><a href='/books/{{ $book->slug }}/delete'><i class="fa fa-trash"></i> Delete</a>
+</ul>
 @endif
 
 @endsection

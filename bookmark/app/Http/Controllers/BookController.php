@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Arr;
 use Str;
 use App\Book;
+use App\Author;
 
 class BookController extends Controller
 {
@@ -15,7 +16,14 @@ class BookController extends Controller
     */
     public function create(Request $request)
     {
-        return view('books.create');
+        # Get authors for our dropdown
+        $authors = Author::orderBy('last_name')
+            ->select(['id', 'first_name', 'last_name'])
+            ->get();
+
+        return view('books.create')->with([
+            'authors' => $authors
+        ]);
     }
 
 
@@ -32,7 +40,7 @@ class BookController extends Controller
         $request->validate([
             'slug' => 'required|unique:books,slug|alpha_dash',
             'title' => 'required',
-            'author' => 'required',
+            'author_id' => 'required',
             'published_year' => 'required|digits:4',
             'cover_url' => 'url',
             'info_url' => 'url',
@@ -47,7 +55,7 @@ class BookController extends Controller
         $newBook = new Book();
         $newBook->slug = $request->slug;
         $newBook->title = $request->title;
-        $newBook->author = $request->author;
+        $newBook->author_id = $request->author_id;
         $newBook->published_year = $request->published_year;
         $newBook->cover_url = $request->cover_url;
         $newBook->info_url = $request->info_url;
@@ -55,7 +63,9 @@ class BookController extends Controller
         $newBook->description = $request->description;
         $newBook->save();
 
-        return redirect('/books/create')->with(['flash-alert' => 'Your book '.$newBook->title.' was added.']);
+        return redirect('/books/create')->with([
+            'flash-alert' => 'Your book '.$newBook->title.' was added.'
+        ]);
     }
 
     /**
@@ -79,15 +89,28 @@ class BookController extends Controller
         $searchTerms = $request->input('searchTerms', null);
         $searchType = $request->input('searchType', null);
 
-        # Query the database for the input searchTerms, either by title or author
-        # depending on the value of searchType--note, we don't have to worry about
-        # case-sensitivity, as our database table is utf8mb4_unicode_ci (case insensitive)
-        if ($searchType == 'title') {
-            $searchResults = Book::where('title', 'LIKE', '%' . $searchTerms . '%')->get();
-        }
-        elseif ($searchType == 'author') {
-            $searchResults = Book::where('author', 'LIKE', '%' . $searchTerms . '%')->get();
-        }
+        # Load our book data using PHP's file_get_contents
+        # We specify our books.json file path using Laravel's database_path helper
+        $bookData = file_get_contents(database_path('books.json'));
+    
+        # Convert the string of JSON text we loaded from books.json into an
+        # array using PHP's built-in json_decode function
+        $books = json_decode($bookData, true);
+    
+        # This algorithm will filter our $books down to just the books where either
+        # the title or author ($searchType) matches the keywords the user entered ($searchTerms)
+        # The search values are convereted to lower case using PHP's built in strtolower function
+        # so that the search is case insensitive
+        $searchResults = array_filter($books, function ($book) use ($searchTerms, $searchType) {
+            return Str::contains(strtolower($book[$searchType]), strtolower($searchTerms));
+        });
+
+        # The above array_filter accomplishes the same thing this for loop would
+        // foreach ($books as $slug => $book) {
+        //     if (strtolower($book[$searchType]) == strtolower($searchTerms)) {
+        //         $searchResults[$slug] = $book;
+        //     }
+        // }
 
         # Redirect back to the form with data/results stored in the session
         # Ref: https://laravel.com/docs/redirects#redirecting-with-flashed-session-data
@@ -136,7 +159,6 @@ class BookController extends Controller
     {
         $book = Book::where('slug', '=', $slug)->first();
 
-
         return view('books.show')->with([
             'book' => $book,
             'slug' => $slug,
@@ -149,9 +171,15 @@ class BookController extends Controller
     public function edit(Request $request, $slug)
     {
         $book = Book::where('slug', '=', $slug)->first();
+        $current_author = $book->author;
+
+        # Get authors for our dropdown
+        $authors = Author::orderBy('last_name')->select(['id', 'first_name', 'last_name'])->get();
 
         return view('books.edit')->with([
-            'book' => $book
+            'book' => $book,
+            'authors' => $authors,
+            'current_author' => $current_author
         ]);
     }
 
@@ -188,18 +216,37 @@ class BookController extends Controller
         ]);
     }
 
+    /**
+    * Asks user to confirm they want to delete the book
+    * GET /books/{slug}/delete
+    */
+    public function delete($slug)
+    {
+        $book = Book::findBySlug($slug);
+
+        if (!$book) {
+            return redirect('/books')->with([
+                'flash-alert' => 'Book not found'
+            ]);
+        }
+
+        return view('books.delete')->with([
+            'book' => $book,
+        ]);
+    }
 
     /**
-    * DELETE /books/{$slug}
+    * Deletes the book
+    * DELETE /books/{slug}/delete
     */
-    public function destroy(Request $request, $slug)
+    public function destroy($slug)
     {
-        $book = Book::where('slug', '=', $slug)->first();
+        $book = Book::findBySlug($slug);
 
         $book->delete();
 
         return redirect('/books')->with([
-            'flash-alert' => $book->title . ' was deleted.'
+            'flash-alert' => '“' . $book->title . '” was removed.'
         ]);
     }
 
