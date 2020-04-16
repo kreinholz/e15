@@ -22,6 +22,10 @@ class CreateChecklistsTable extends Migration
 
             # Add a title for this particular checklist, e.g. "Checklist for Reviewing the Rail Transit Agency Safety Plan"
             $table->string('title');
+
+            # TO DO: Create a MANY-TO-MANY relationship between checklists and checklist_items
+            # Currently, we have a ONE-TO-MANY relationship between checklist_items and checklists
+            # but we actually want it to work both ways.
         });
     }
 

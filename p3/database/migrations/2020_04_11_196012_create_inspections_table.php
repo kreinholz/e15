@@ -25,20 +25,25 @@ class CreateInspectionsTable extends Migration
 
             # Instantiate an unsigned new column to act as a foreign key
             # See https://github.com/susanBuck/e15-spring20/issues/38
-            $table->bigInteger('inspector')->unsigned();
+            $table->bigInteger('inspector_id')->unsigned();
             
             # Inspector FOREIGN KEY from users table
-            $table->foreign('inspector')->references('id')->on('users');
+            $table->foreign('inspector_id')->references('id')->on('users');
 
             # Inspection due date DATE
             $table->date('inspection_date');
 
             # Instantiate an unsigned new column to act as a foreign key
             # See https://github.com/susanBuck/e15-spring20/issues/38
-            $table->bigInteger('checklist')->unsigned();
+            $table->bigInteger('checklist_id')->unsigned();
 
             # Checklist FOREIGN KEY from checklists table
-            $table->foreign('checklist')->references('id')->on('checklists');
+            $table->foreign('checklist_id')->references('id')->on('checklists');
+
+            # TO DO: The above might need modification...we want the checklist_items associated
+            # with a given checklist to be COPIED over to this table, not linked, because we
+            # only want edits to checklist_items to be reflected in an inspection, not in a base
+            # checklist.
         });
     }
 

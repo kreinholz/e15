@@ -24,21 +24,21 @@ class CreateChecklistItemsTable extends Migration
             $table->string('item_name');
 
             # Checklist Item Included BOOLEAN
-            $table->boolean('included');
+            $table->boolean('included')->nullable();
 
             # Checklist Item Page Reference SMALLINT
-            $table->smallInteger('page_reference');
+            $table->smallInteger('page_reference')->nullable();
 
             # Checklist Item Comments TEXT
-            $table->text('comments');
+            $table->text('comments')->nullable();
 
             # Instantiate an unsigned new column to act as a foreign key
             # See https://github.com/susanBuck/e15-spring20/issues/38
-            $table->bigInteger('checklist')->unsigned();
+            $table->bigInteger('checklist_id')->unsigned();
 
             # Add foreign key associating checklist items with a checklist
             # See https://github.com/susanBuck/e15-spring20/issues/38
-            $table->foreign('checklist')->references('id')->on('checklists');
+            $table->foreign('checklist_id')->references('id')->on('checklists');
         });
     }
 
