@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Inspection;
+use App\Checklist;
+use App\ChecklistItem;
 
 class InspectionController extends Controller
 {
@@ -15,4 +18,13 @@ class InspectionController extends Controller
 
     # Another possibility is utilizing the create() method as outlined in the Laravel documentation:
     # Ref: https://laravel.com/docs/7.x/eloquent-relationships#inserting-and-updating-related-models
+
+    public function index()
+    {
+        $inspections = Inspection::orderBy('rail_transit_agency')->orderBy('inspection_date')->get();
+        
+        return view('inspections.index')->with([
+            'inspections' => $inspections
+        ]);
+    }
 }

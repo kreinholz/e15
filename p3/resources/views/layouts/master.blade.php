@@ -26,17 +26,33 @@
     <header>
         <a href='/'><img src='/images/dot_logo_shadow.png' id='logo' alt='WisDOT Logo'></a>
         <span id='header'>Wisconsin Department of Transportation</span>
-        <h3>This is a mock-up for academic purposes, and not to be mistaken for an official
+        <h3 class='alert alert-warning'>This is a mock-up for academic purposes, and not to be mistaken for an official
             government website. To visit the <strong>real</strong> WisDOT Rail Transit Safety
             Oversight website, click <a href='https://wisconsindot.gov/Pages/doing-bus/local-gov/astnce-pgms/transit/compliance/safety-rail.aspx'>here</a>.
         </h3>
         <nav>
             <ul>
                 <li><a href='/'>Home</a></li>
-                <li><a href='/checklist'>View Inspection Checklists</a></li>
-                <li><a href='/inspections/create'>Start a New Inspection</a></li>
-                <li><a href='/inspections'>List In-Progress/Completed Inspections</a></li>
-                <li><a href='/rta_safety_plan_checklist.pdf'>Manual Copy of Inspection Checklist</a></li>
+                @if(Auth::id() == 1)
+                    <li><a href='/checklists'>View Inspection Checklists</a></li>
+                    <li><a href='/checklists/create'>Create a New Checklists</a></li>
+                @endif
+                @if(Auth::user())
+                    <li><a href='/inspections/create'>Start a New Inspection</a></li>
+                    <li><a href='/inspections'>List In-Progress/Completed Inspections</a></li>
+                @endif
+                <li><a href='/rta_safety_plan_checklist.pdf'>Inspection Checklist PDF</a></li>
+<!-- login/logout code from https://hesweb.dev/e15/notes/laravel/auth-setup -->
+                <li>
+                    @if(!Auth::user())
+                        <a href='/login'>Login</a>
+                    @else
+                        <form method='POST' id='logout' action='/logout'>
+                            {{ csrf_field() }}
+                            <a href='#' onClick='document.getElementById("logout").submit();'>Logout</a>
+                        </form>
+                    @endif
+                </li>
             </ul>
         </nav>
     </header>

@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChecklistItem extends Model
 {
-    # Allow MANY Checklist Items to belong to a Checklist
-    # Ref: https://www.itsolutionstuff.com/post/laravel-one-to-many-eloquent-relationship-tutorialexample.html
-#    public function checklists()
-#    {
-#        return $this->belongsTo(Checklist::class);
-#    }
+    # Define MANY-TO-MANY relationship between Checklists and ChecklistItems
+    # Ref: https://laravel.com/docs/7.x/eloquent-relationships#many-to-many
+    public function checklists()
+    {
+        return $this->belongsToMany(Checklist::class);
+    }
 }
