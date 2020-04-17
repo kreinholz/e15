@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /* Default route */
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'PageController@welcome');
 
 /* Protected routes for the Safety Oversight Manager */
 /* Ref: https://medium.com/justlaravel/how-to-use-middleware-for-content-restriction-based-on-user-role-in-laravel-2d0d8f8e94c6 */

@@ -33,9 +33,9 @@
         <nav>
             <ul>
                 <li><a href='/'>Home</a></li>
-                @if(Auth::id() == 1)
+                @if(Auth::user() && Auth::user()->job_title == 'Safety Oversight Manager')
                     <li><a href='/checklists'>View Inspection Checklists</a></li>
-                    <li><a href='/checklists/create'>Create a New Checklists</a></li>
+                    <li><a href='/checklists/create'>Create a New Checklist</a></li>
                 @endif
                 @if(Auth::user())
                     <li><a href='/inspections/create'>Start a New Inspection</a></li>
