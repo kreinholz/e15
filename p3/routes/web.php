@@ -16,27 +16,6 @@ use Illuminate\Support\Facades\Route;
 /* Default route */
 Route::get('/', 'PageController@welcome');
 
-/* Protected routes for the Safety Oversight Manager */
-/* Ref: https://medium.com/justlaravel/how-to-use-middleware-for-content-restriction-based-on-user-role-in-laravel-2d0d8f8e94c6 */
-Route::group(['middleware' => 'App\Http\Middleware\checkManager'], function () {
-    /* Show available checklists */
-    Route::get('/checklists', 'ChecklistController@index');
-
-    /* Show an individual checklist */
-    Route::get('/checklists/{id?}', 'ChecklistController@show');
-
-    /* Create a checklist */
-    Route::get('/checklists/create', 'ChecklistController@create');
-    Route::post('/checklists', 'ChecklistController@store');
-
-    /* Edit a checklist */
-    Route::get('checklists/{id}/edit', 'ChecklistController@edit');
-    Route::put('/checklists/{id}', 'ChecklistController@update');
-    
-    /* Delete a checklist */
-    Route::delete('/checklists/{id}', 'ChecklistController@destroy');
-});
-
 /* Protected routes for authenticated users */
 Route::group(['middleware' => 'auth'], function () {
     /* List saved inspections */
@@ -55,7 +34,27 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Delete an inspection */
     Route::delete('/inspections/{id}', 'InspectionController@destroy');
+
+    /* Additional protected routes for the Safety Oversight Manager */
+    /* Ref: https://medium.com/justlaravel/how-to-use-middleware-for-content-restriction-based-on-user-role-in-laravel-2d0d8f8e94c6 */
+    Route::group(['middleware' => 'App\Http\Middleware\checkManager'], function () {
+        /* Show available checklists */
+        Route::get('/checklists', 'ChecklistController@index');
+
+        /* Show an individual checklist */
+        Route::get('/checklists/{id?}', 'ChecklistController@show');
+
+        /* Create a checklist */
+        Route::get('/checklists/create', 'ChecklistController@create');
+        Route::post('/checklists', 'ChecklistController@store');
+
+        /* Edit a checklist */
+        Route::get('checklists/{id}/edit', 'ChecklistController@edit');
+        Route::put('/checklists/{id}', 'ChecklistController@update');
+    
+        /* Delete a checklist */
+        Route::delete('/checklists/{id}', 'ChecklistController@destroy');
+    });
 });
-# Lots TO DO here--authentication for User management, and depending on Eloquent capabilities/
-# limitations, routes for creating new checklists/adding/deleting/updating checklist items.
+
 Auth::routes();

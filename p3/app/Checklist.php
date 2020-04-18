@@ -10,6 +10,6 @@ class Checklist extends Model
     # Ref: https://laravel.com/docs/7.x/eloquent-relationships#many-to-many
     public function checklist_items()
     {
-        return $this->belongsToMany(ChecklistItem::class);
+        return $this->belongsToMany('App\ChecklistItem');
     }
 }
