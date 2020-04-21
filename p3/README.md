@@ -11,16 +11,21 @@
 + Users can view prior completed Rail Transit Agency Safety Plan reviews/inspections
 + Users can create a new review/inspection, and fill out an interactive checklist to review an inspected Rail Transit Agency's Safety Plan
 + The User who created a review/inspection can edit his/her checklist
-+ The super user can delete a review/inspection
-+ The super user can add/remove checklist_items from a checklist
++ The Safety Oversight Manager (seeded user Jill Harvard for demo purposes) can delete a review/inspection
++ The Safety Oversight Manager can view and create checklists, and add/remove checklist_items from a checklist
++ The Safety Oversight Manager can create new checklist_items and add them to a checklist
++ checklist related routes are protected and only the Safety Oversight Manager can access them
++ inspection related routes and protected and only authenticated users (seeded users Jamal Harvard and Jill Harvard for demo purposes) can access them. Guests are invited to register for accounts
   
 ## Database summary
 *Describe the tables and relationships used in your database. Delete the examples below and replace with your own info.*
 
-+ My application has 4 tables in total (`users`, `inspections`, `checklists`, and `checklist_items`)
-+ There's a one-to-many relationship between `inspections` and `users`
-+ There's a many-to-many relationship between `checklists` and `inspections`
-+ There's a one-to-many relationship between `checklist_items` and `checklists`
++ My application has 8 tables in total (`users`, `inspections`, `checklists`, `checklist_items`, a join table for `checklists` and `checklist_items`, and "snapshot" tables `inspection_checklists`, `inspection_items`, and a join table for `inspection_checklists` and `inspection_items` that clone their checklist-related counterparts and freeze them in time so subsequent changes to the checklists/checklist_items won't affect already completed inspections)
++ There's a one-to-one (foreign key) relationship between `inspections` and `users`
++ There's a many-to-many relationship between `checklists` and `checklist_items`
++ There's a many-to-many relationship between `inspection_checklists` and `inspection_items`
++ There's a one-to-one (foreign key) relationship between `inspections` and `inspection_checklists`
++ There's a replicate()-based "relationship" between `checklists` and `inspection_checklists`, and between `checklist_items` and `inspection_items`, to preserve integrity of inspection data while allowing updates to checklists and checklist_items for use in current inspections
 
 ## Outside resources
 + <https://wisconsindot.gov/Documents/doing-bus/local-gov/astnce-pgms/transit/compliance/sso-append.pdf> (checklist begins on page 113)

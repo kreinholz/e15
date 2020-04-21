@@ -42,7 +42,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/checklists', 'ChecklistController@index');
 
         /* Show an individual checklist */
-        Route::get('/checklists/{id?}', 'ChecklistController@show');
+        # Ref: https://stackoverflow.com/a/30414884
+        Route::get('/checklists/{id}', 'ChecklistController@show')->where('id', '[0-9]+');
 
         /* Create a checklist */
         Route::get('/checklists/create', 'ChecklistController@create');
