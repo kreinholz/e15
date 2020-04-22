@@ -12,7 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(ChecklistItemsTableSeeder::class);
-        // $this->call(ChecklistsTableSeeder::class);
+        $this->call(ChecklistsTableSeeder::class);
+        $this->call(ChecklistChecklistItemTableSeeder::class);
         // $this->call(InspectionsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
     }

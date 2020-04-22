@@ -10,6 +10,7 @@ class ChecklistItem extends Model
     # Ref: https://laravel.com/docs/7.x/eloquent-relationships#many-to-many
     public function checklists()
     {
-        return $this->belongsToMany('App\Checklist');
+        return $this->belongsToMany('App\Checklist')
+            ->withTimestamps();
     }
 }
