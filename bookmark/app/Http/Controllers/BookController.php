@@ -7,6 +7,7 @@ use Arr;
 use Str;
 use App\Book;
 use App\Author;
+use App\User;
 
 class BookController extends Controller
 {
@@ -144,13 +145,18 @@ class BookController extends Controller
      * GET /book/{slug}
      * Show the details for an individual book
      */
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
         $book = Book::where('slug', '=', $slug)->first();
+
+        $user = User::where('id', '=', $request->user()->id)->first();
+
+        $users_book = $user->books()->where('slug', '=', $slug)->first();
 
         return view('books.show')->with([
             'book' => $book,
             'slug' => $slug,
+            'users_book' => $users_book
         ]);
     }
 

@@ -31,7 +31,16 @@
 </p>
 
 <ul class='bookActions'>
-    <li><a href='/list/{{ $book->slug }}/add'><i class="fa fa-plus"></i> Add to your list</a>
+    <li>
+        @if($users_book)
+            <form method='POST' action='/list/{{ $book->slug }}'>
+                {{ method_field('delete') }}
+                {{ csrf_field() }}
+                <input type='submit' value='Remove from your list'>
+            </form>
+        @else
+            <a href='/list/{{ $book->slug }}/add'><i class="fa fa-plus"></i> Add to your list</a>
+        @endif
     <li><a href='/books/{{ $book->slug }}/edit'><i class="fa fa-edit"></i> Edit</a>
     <li><a href='/books/{{ $book->slug }}/delete'><i class="fa fa-trash"></i> Delete</a>
 </ul>
