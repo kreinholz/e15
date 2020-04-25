@@ -23,8 +23,11 @@
                 <p>By {{ $book->author->first_name. ' ' . $book->author->last_name }}</p>
             @endif
 
-            <form method='POST' action='#'>
-                <textarea class='notes'>{{ $book->pivot->notes }}</textarea>
+            <form method='POST' action='/list/{{ $book->slug }}'>
+                {{ csrf_field() }}
+
+                {{  method_field('put') }}
+                <textarea name='notes' class='notes'>{{ $book->pivot->notes }}</textarea>
                 <input type='submit' class='btn btn-primary' value='Update notes'>
             </form>
 
