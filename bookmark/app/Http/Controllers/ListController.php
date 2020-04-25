@@ -67,11 +67,11 @@ class ListController extends Controller
     #DELETE /list/{slug}
     public function destroy(Request $request, $slug)
     {
-        $book = Book::findBySlug($slug);
+        $user = User::where('id', '=', $request->user()->id)->first();
+        
+        $book = $user->books()->where('slug', '=', $slug)->first();
 
-        $book->users()->detach();
-
-        $book->delete();
+        $book->pivot->delete();
 
         return redirect('/books')->with([
             'flash-alert' => '“' . $book->title . '” was removed.'

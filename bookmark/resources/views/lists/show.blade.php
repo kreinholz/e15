@@ -35,7 +35,11 @@
                 Added to your list {{ $book->pivot->created_at->diffForHumans() }}
             </p>
 
-           <a href='#'><i class="fa fa-minus-circle"></i> Remove from your list</a>
+            <form method='POST' action='/list/{{ $book->slug }}'>
+                {{ method_field('delete') }}
+                {{ csrf_field() }}
+                <input type='submit' value='Remove from your list'>
+            </form>
 
         </div>
         @endforeach
