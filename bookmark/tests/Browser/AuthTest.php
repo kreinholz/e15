@@ -9,7 +9,7 @@ use Tests\DuskTestCase;
 class AuthTest extends DuskTestCase
 {
     use DatabaseMigrations;
-
+    
     /**
      * A Dusk test example.
      *
@@ -34,7 +34,7 @@ class AuthTest extends DuskTestCase
     public function testFailedRegistration()
     {
         $this->browse(function (Browser $browser) {
-            $browser->logout()
+            $browser->click('#logout')
                     ->visit('http://e15bookmark.loc/register')
                     ->type('name', 'Joe Smith')
                     ->type('email', 'joe1@gmail.com')
@@ -53,12 +53,21 @@ class AuthTest extends DuskTestCase
         $this->seed();
 
         $this->browse(function (Browser $browser) {
-            $browser->logout()
+            $browser->click('#logout')
                     ->visit('http://e15bookmark.loc/login')
                     ->type('@email-input', 'jill@harvard.edu')
                     ->type('@password-input', 'helloworld')
                     ->click('@login-button')
                     ->assertSee('LOGOUT JILL HARVARD');
+        });
+    }
+    public function testLogout()
+    {
+        $this->seed();
+
+        $this->browse(function (Browser $browser) {
+            $browser->click('#logout')
+                    ->assertSee('LOGIN');
         });
     }
 }

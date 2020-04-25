@@ -54,7 +54,7 @@
         <textarea name='description'>{{ old('description') }}</textarea>
         @include('includes.error-field', ['fieldName' => 'description'])
 
-        <input type='submit' class='btn btn-primary' value='Add'>
+        <input type='submit' dusk='login-button' class='btn btn-primary' value='Add'>
 
     </form>
  
