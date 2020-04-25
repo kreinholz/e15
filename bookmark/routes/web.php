@@ -14,9 +14,13 @@ Route::get('/support', 'PageController@support');
 
 
 /**
- * Books
+ * Auth required routes
  */
 Route::group(['middleware' => 'auth'], function () {
+
+    /**
+     * Book routes
+     */
     # Create a book
     Route::get('/books/create', 'BookController@create');
     Route::post('/books', 'BookController@store');
@@ -31,20 +35,30 @@ Route::group(['middleware' => 'auth'], function () {
     # Show a book
     Route::get('/books/{slug?}', 'BookController@show');
 
-    # DELETE
     # Show the page to confirm deletion of a book
     Route::get('/books/{slug}/delete', 'BookController@delete');
 
     # Process the deletion of a book
     Route::delete('/books/{slug}', 'BookController@destroy');
+    
+    # Search for a book
+    Route::get('/search', 'BookController@search');
+
+    /**
+     * List routes
+     */
+    # Show your list
+    Route::get('/list', 'ListController@show');
+
+    # Page to add a book to your list
+    Route::get('/list/{slug?}/add', 'ListController@add');
+
+    # Process adding a book to your list
+    Route::post('/list/{slug?}/add', 'ListController@save');
 });
 
-# Misc
-Route::get('/search', 'BookController@search');
-Route::get('/list', 'BookController@list');
 
-# This was an example route to show multiple parameters;
-# Not a feature we're actually building, so I'm commenting out
-# Route::get('/filter/{category}/{subcategory?}', 'BookController@filter');
-
+/**
+ * Auth routes
+ */
 Auth::routes();

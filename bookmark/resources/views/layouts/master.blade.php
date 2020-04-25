@@ -30,7 +30,7 @@
                 @if(Auth::user())
                 <li><a href='/books'>All Books</a></li>
                 <li><a href='/books/create'>Add a Book</a></li>
-                <li><a href='/list'>Your list</a></li>
+                <li><a href='/list'>My list</a></li>
                 @endif
 
                 <li><a href='/support'>Support</a></li>

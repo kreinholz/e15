@@ -26,7 +26,6 @@ class BookController extends Controller
         ]);
     }
 
-
     /**
     * POST /books
     * Process the form for adding a new book
@@ -121,16 +120,6 @@ class BookController extends Controller
         ]);
     }
 
-
-    /**
-     * GET /list
-     */
-    public function list()
-    {
-        # TODO
-        return view('books.list');
-    }
-
     /**
      * GET /books
      * Show all the books in the library
@@ -171,15 +160,9 @@ class BookController extends Controller
     public function edit(Request $request, $slug)
     {
         $book = Book::where('slug', '=', $slug)->first();
-        $current_author = $book->author;
-
-        # Get authors for our dropdown
-        $authors = Author::orderBy('last_name')->select(['id', 'first_name', 'last_name'])->get();
 
         return view('books.edit')->with([
-            'book' => $book,
-            'authors' => $authors,
-            'current_author' => $current_author
+            'book' => $book
         ]);
     }
 
@@ -243,28 +226,12 @@ class BookController extends Controller
     {
         $book = Book::findBySlug($slug);
 
+        $book->users()->detach();
+
         $book->delete();
 
         return redirect('/books')->with([
             'flash-alert' => '“' . $book->title . '” was removed.'
         ]);
     }
-
-    /**
-     * GET /filter/{$category}/{subcategory?}
-     * Example demonstrating multiple parameters
-     * Not a feature we're actually building, so I'm commenting out
-     */
-    /*
-    public function filter($category, $subcategory = null)
-    {
-        $output = 'Here are all the books under the category '.$category;
-
-        if ($subcategory) {
-            $output .= ' and also the subcategory '.$subcategory;
-        }
-
-        return $output;
-    }
-    */
 }

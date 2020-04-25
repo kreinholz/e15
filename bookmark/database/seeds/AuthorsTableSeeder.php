@@ -14,7 +14,6 @@ class AuthorsTableSeeder extends Seeder
     {
         # Array of author data to add
         $authors = [
-            ['Andy', 'Weir', 1972, 'https://en.wikipedia.org/wiki/Andy_Weir'],
             ['F. Scott', 'Fitzgerald', 1896, 'https://en.wikipedia.org/wiki/F._Scott_Fitzgerald'],
             ['Sylvia', 'Plath', 1932, 'https://en.wikipedia.org/wiki/Sylvia_Plath'],
             ['Maya', 'Angelou', 1928, 'https://en.wikipedia.org/wiki/Maya_Angelou'],
@@ -38,21 +37,6 @@ class AuthorsTableSeeder extends Seeder
             $author->save();
         
             $count--;
-        }
-
-        # Generate more authors courtesy of faker
-        $faker = Faker\Factory::create();
-
-        for ($i = 0; $i < 5; $i++) {
-            $author = new Author();
-            $name = $faker->name;
-            $array_name = explode(' ', $name);
-            $fullname = explode(' ', $name);
-            $author->first_name = array_shift($fullname);
-            $author->last_name = array_pop($fullname);
-            $author->birth_year = $faker->year;
-            $author->bio_url = 'https://en.wikipedia.org/wiki/' . implode('_', $array_name);
-            $author->save();
         }
     }
 }

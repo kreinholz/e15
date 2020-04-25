@@ -27,14 +27,9 @@
         <input type='text' name='title' id='title' value='{{ old('title', $book->title) }}'>
         @include('includes.error-field', ['fieldName' => 'title'])
 
-        <label for='author_id'>* Author</label>
-        <select name='author_id'>
-            <option value='{{ $current_author->id }}'>{{ $current_author->first_name . ' ' . $current_author->last_name }}</option>
-            @foreach($authors as $author)
-                <option value='{{ $author->id }}' {{ (old('author_id') == $author->id) ? 'selected' : '' }}>{{ $author->first_name.' '.$author->last_name }}</option>
-            @endforeach
-        </select>
-        @include('includes.error-field', ['fieldName' => 'author_id'])
+        <label for='author'>* Author</label>
+        <input type='text' name='author' id='author' value='{{ old('author', $book->author) }}'>
+        @include('includes.error-field', ['fieldName' => 'author'])
 
         <label for='published_year'>* Published Year (YYYY)</label>
         <input type='text' name='published_year' id='published_year' value='{{ old('published_year', $book->published_year) }}'>

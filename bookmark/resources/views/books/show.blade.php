@@ -31,6 +31,7 @@
 </p>
 
 <ul class='bookActions'>
+    <li><a href='/list/{{ $book->slug }}/add'><i class="fa fa-plus"></i> Add to your list</a>
     <li><a href='/books/{{ $book->slug }}/edit'><i class="fa fa-edit"></i> Edit</a>
     <li><a href='/books/{{ $book->slug }}/delete'><i class="fa fa-trash"></i> Delete</a>
 </ul>

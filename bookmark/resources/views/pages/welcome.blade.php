@@ -9,8 +9,10 @@
 @if(!Auth::user())
     <p>
         Welcome to Bookmark&mdash; an online book journal that let’s you track and share a history of books you’ve read.
+    </p>
 
-        <a href='/register'>Register now to get started...</a>
+    <p>
+        <a href='/register' dusk='register-link'>Register now to get started...</a>
     </p>
 @else
     <p>

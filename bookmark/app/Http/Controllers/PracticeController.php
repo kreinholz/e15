@@ -6,35 +6,75 @@ use Illuminate\Http\Request;
 use App\Book;
 use Str;
 use App\Author;
+use App\User;
+use Auth;
 
 class PracticeController extends Controller
 {
+
     /**
-    *
+    * Demonstrates updating a many-to-many relationship
     */
-    public function practice20()
+    public function practice23()
     {
-        $book = true;
+        # As an example, grab a user we know has books on their list
+        $user = User::where('email', '=', 'jill@harvard.edu')->first();
 
-        while ($book) {
-            #retrieve books
-            $book = Book::where('author', '=', 'J.K. Rowling')->first();
+        # Grab the first book on their list
+        $book = $user->books()->first();
 
-            #make sure there is a book retrieved
-            if (!$book) {
-                dump('Book not found or all books have been updated.');
-            } else {
-                #book found and now correct the authors name
-                $book->author = 'JK Rowling';
+        # Update and save the notes for this relationship
+        $book->pivot->notes = "New note...";
+        $book->pivot->save();
 
-                #save changes
-                $book->save();
+        dump($book->toArray());
 
-                dump($book->title, "Updated Author to", $book->author);
-            }
+        return 'Update complete';
+    }
+
+    /**
+    * Demonstrates deleting a many-to-many relationship
+    */
+    public function practice22()
+    {
+        # As an example, grab a user we know has books on their list
+        $user = User::where('email', '=', 'jill@harvard.edu')->first();
+
+        # Grab the first book on their list
+        $book = $user->books()->first();
+
+        # Delete the relationship
+        $book->pivot->delete();
+
+        dump($book->toArray());
+
+        return 'Delete complete';
+    }
+
+    /**
+    * Demonstrates retrieving data in a one-to-many relationship
+    */
+    public function practice21()
+    {
+        # Eager load `users` to avoid uncessary extra queries in the loop below
+        $books = Book::with('users')->get();
+
+        foreach ($books as $book) {
+            dump($book->title);
+            dump($book->users->toArray());
         }
     }
 
+    /**
+    * Demonstrates retrieving data in a one-to-many relationship
+    */
+    public function practice20()
+    {
+        $user = User::where('email', '=', 'jill@harvard.edu')->first();
+
+        # Note that the `books` relationship method is accessed as a dynamic property
+        dump($user->books->toArray());
+    }
 
     /**
      * [6 of 6] Solution to query practice from Week 9 assignment
