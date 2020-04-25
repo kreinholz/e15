@@ -18,7 +18,7 @@ class AuthTest extends DuskTestCase
     public function testRegistration()
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit('/')
+            $browser->visit('http://e15bookmark.loc')
                     ->click('@register-link')
                     ->assertSee('Register')
                     ->assertVisible('@register-heading')
@@ -35,7 +35,7 @@ class AuthTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->logout()
-                    ->visit('/register')
+                    ->visit('http://e15bookmark.loc/register')
                     ->type('name', 'Joe Smith')
                     ->type('email', 'joe1@gmail.com')
                     ->type('password', 'hello')
@@ -54,7 +54,7 @@ class AuthTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->logout()
-                    ->visit('/login')
+                    ->visit('http://e15bookmark.loc/login')
                     ->type('@email-input', 'jill@harvard.edu')
                     ->type('@password-input', 'helloworld')
                     ->click('@login-button')

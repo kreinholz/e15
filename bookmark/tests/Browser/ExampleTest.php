@@ -16,7 +16,7 @@ class ExampleTest extends DuskTestCase
     public function testBasicExample()
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit('/') # Action: Go to the homepage
+            $browser->visit('http://e15bookmark.loc') # Action: Go to the homepage
                     ->assertSee('Welcome to Bookmark'); # Assertions: We see this text on the page
         });
     }
