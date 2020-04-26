@@ -18,19 +18,18 @@
         <input type='text' name='title' id='title' value='{{ old('title') }}'>
         @include('includes.error-field', ['fieldName' => 'title'])
 
-        <label for='item_id'>Item</label>
-        <select name='item_id'>
-            <option value=''>Choose one...</option>
-            @foreach($checklistItems as $item)
-                <option value='{{ $item->id }}' {{ (old('item_id') == $item->item_id) ? 'selected' : '' }}>{{ $item->item_number.' '.$item->item_name.' - '.$item->plan_requirement }}</option>
-            @endforeach
-        </select>
-        @include('includes.error-field', ['fieldName' => 'item_id'])
-
- <!-- This is where there should be a button to add an additional item, as many items as desired on the checklist -->
+        <label for='checklist_items'>Available Checklist Items</label>
+        @foreach($checklistItems as $item)
+            <h4>{{ $item->item_number }}. {{ $item->item_name }}</h4>
+            <p>{{ $item->plan_requirement }}<br>
+            <!-- checkboxes remaining checked upon validation failure comes from https://stackoverflow.com/a/39524462 -->
+            <input type='checkbox' name='checklist_items[]' value='{{ $item->id }}' @if(is_array(old('checklist_items')) && in_array($item->id, old('checklist_items'))) checked @endif>Add this item to checklist</p>
+        @endforeach
 
         <input type='submit' class='btn btn-primary' value='Create Checklist'>
 
     </form>
+<p></p>
+    <p>Want to add a question/item that isn't included in the above list? Click <a href='/checklist-items'>here</a> to create new items for inclusion in checklists.</p>
 
 @endsection

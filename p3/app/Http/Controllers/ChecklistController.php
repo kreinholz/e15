@@ -36,6 +36,35 @@ class ChecklistController extends Controller
     }
 
     /**
+    * POST /checklists
+    * Process the form for adding a new book
+    */
+    public function store(Request $request)
+    {
+        # Validate the request data
+        # The `$request->validate` method takes an array of data
+        # where the keys are form inputs
+        # and the values are validation rules to apply to those inputs
+        $request->validate([
+            'title' => 'required'
+        ]);
+
+        # title and checklist_items[] are the 2 variables that should be returned by form data
+
+        # Add the checklist to the database
+        $newChecklist = new Checklist();
+        $newChecklist->title = $request->title;
+        $newChecklist->save();
+        # Once the new checklist is added, add the checklist_items to the pivot table
+        # Ref: https://laracasts.com/discuss/channels/laravel/saving-multiple-records-to-database-with-many-to-many-relation?page=1
+        $newChecklist->checklist_items()->attach($request->checklist_items);
+
+        return redirect('/checklists/create')->with([
+            'flash-alert' => 'Your checklist '.$newChecklist->title.' was added.'
+        ]);
+    }
+
+    /**
      * GET /checklists/{id}
      * Show the details for an individual checklist
      */
