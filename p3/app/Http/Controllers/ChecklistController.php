@@ -35,6 +35,23 @@ class ChecklistController extends Controller
         ]);
     }
 
+    /**
+     * GET /checklists/{id}
+     * Show the details for an individual checklist
+     */
+    public function show(Request $request, $id)
+    {
+        $checklist = Checklist::where('id', '=', $id)->first();
+
+        $checklist_items = $checklist->checklist_items()->where('checklist_id', '=', $id)->get();
+
+        return view('checklists.show')->with([
+            'checklist' => $checklist,
+            'id' => $id,
+            'checklist_items' => $checklist_items
+        ]);
+    }
+
     /*
      * GET /checklists/{id}/edit
     */
