@@ -22,7 +22,7 @@
 @endif
 
 @if($checklist)
-<a href='/checklists/{{ $checklist->id }}/edit'>Edit this Checklist</a>
+<p><a href='/checklists/{{ $checklist->id }}/edit'>Edit this Checklist</a></p>
 <p><a href='/checklists/{{ $checklist->id }}/delete'>Delete this Checklist</a></p>
 @endif
 

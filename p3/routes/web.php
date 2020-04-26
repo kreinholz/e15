@@ -55,6 +55,12 @@ Route::group(['middleware' => 'auth'], function () {
     
         /* Delete a checklist */
         Route::delete('/checklists/{id}', 'ChecklistController@destroy');
+
+        # Show the page to confirm deletion of a checklist
+        Route::get('/checklists/{id}/delete', 'ChecklistController@delete');
+
+        # Process the deletion of a checklist
+        Route::delete('/checklists/{id}', 'ChecklistController@destroy');
     });
 });
 

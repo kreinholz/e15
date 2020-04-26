@@ -84,21 +84,103 @@ class ChecklistController extends Controller
     /*
      * GET /checklists/{id}/edit
     */
-
     public function edit(Request $request, $id)
     {
         $checklist = Checklist::where('id', '=', $id)->first();
         
         $checklist_items = ChecklistItem::orderBy('item_number')->orderBy('created_at')->get();
     
-        # This is where I will add code to create a third variable that is a filtered version of
-        # the checklist_items database query results (not an additional query), only those results
-        # associated with the current checklist id. We still want all checklist_items, so they can
-        # be added to the current checklist if so desired.
+        # Get the current checklist_items associated with this checklist
+        $existing_items = $checklist->checklist_items()->get();
+
+        # Compare the collection of all checklist_items to existing_items already associated with the checklist
+        # Ref: https://laravel.com/docs/5.2/collections#method-diff
+        $new_items = $checklist_items->diff($existing_items);
 
         return view('checklists.edit')->with([
         'checklist' => $checklist,
-        'checklistItems' => $checklist_items
+        'newItems' => $new_items,
+        'existingItems' => $existing_items
+        ]);
+    }
+
+    /**
+     * PUT /checklists/{$id}
+     */
+    public function update(Request $request, $id)
+    {
+        $checklist = Checklist::where('id', '=', $id)->first();
+
+        # Validate the request data
+        # The `$request->validate` method takes an array of data
+        # where the keys are form inputs
+        # and the values are validation rules to apply to those inputs
+        $request->validate([
+            'title' => 'required'
+        ]);
+
+        # title, existing_items[], and new_items[] are the 3 variables that should be returned by form data
+
+        $checklist->id = $request->id;
+        $checklist->save();
+        # Once the checklist is saved, remove previous checklist_items
+        $checklist->checklist_items()->detach();
+        # Add remaining checklist_items to the pivot table
+        # Ref: https://laracasts.com/discuss/channels/laravel/saving-multiple-records-to-database-with-many-to-many-relation?page=1
+        # Ref: https://php.net/manual/en/function.array-merge.php
+        $checklist_items = [];
+        $existing_items = $request->existing_items;
+        $new_items = $request->new_items;
+        if ($existing_items && $new_items) {
+            $checklist_items = array_merge($existing_items, $new_items);
+        } elseif ($existing_items) {
+            $checklist_items = $existing_items;
+        } elseif ($new_items) {
+            $checklist_items = $new_items;
+        }
+        # Make sure we have at least one checklist_item rather than a null array
+        if ($checklist_items) {
+            $checklist->checklist_items()->attach($checklist_items);
+        }
+        
+        return redirect('/checklists/'.$id.'/edit')->with([
+            'flash-alert' => 'Your changes were saved.'
+        ]);
+    }
+
+    /**
+    * Asks user to confirm they want to delete the checklist
+    * GET /checklists/{id}/delete
+    */
+    public function delete($id)
+    {
+        $checklist = Checklist::where('id', '=', $id)->first();
+
+        if (!$checklist) {
+            return redirect('/checklists')->with([
+                'flash-alert' => 'Checklist not found'
+            ]);
+        }
+
+        return view('checklists.delete')->with([
+            'checklist' => $checklist,
+        ]);
+    }
+
+    /**
+    * Deletes the checklist
+    * DELETE /checklists/{id}/delete
+    */
+    public function destroy($id)
+    {
+        $checklist = Checklist::where('id', '=', $id)->first();
+
+        $checklist->checklist_items()->detach();
+
+        $checklist->delete();
+
+        return redirect('/checklists')->with([
+            'flash-alert' => 'The “' . $checklist->title . '” checklist was removed.'
         ]);
     }
 }
