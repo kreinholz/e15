@@ -22,7 +22,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inspections', 'InspectionController@index');
 
     /* Show an individual inspection */
-    Route::get('/inspections/{id?}', 'InspectionController@show');
+    # Ref: https://stackoverflow.com/a/30414884
+    Route::get('/inspections/{id}', 'InspectionController@show')->where('id', '[0-9]+');
 
     /* Create an inspection */
     Route::get('/inspections/create', 'InspectionController@create');
@@ -52,15 +53,28 @@ Route::group(['middleware' => 'auth'], function () {
         /* Edit a checklist */
         Route::get('checklists/{id}/edit', 'ChecklistController@edit');
         Route::put('/checklists/{id}', 'ChecklistController@update');
-    
-        /* Delete a checklist */
-        Route::delete('/checklists/{id}', 'ChecklistController@destroy');
 
-        # Show the page to confirm deletion of a checklist
+        /* Show the page to confirm deletion of a checklist */
         Route::get('/checklists/{id}/delete', 'ChecklistController@delete');
 
-        # Process the deletion of a checklist
+        /* Process the deletion of a checklist */
         Route::delete('/checklists/{id}', 'ChecklistController@destroy');
+
+        # The following routes pertain to checklist items, as opposed to checklists
+
+        /* Show available checklist items */
+        Route::get('/checklist-items', 'ChecklistItemController@index');
+
+        /* Create a checklist item */
+        Route::get('/checklist-items/create', 'ChecklistItemController@create');
+        Route::post('/checklist-items', 'ChecklistItemController@store');
+
+        /* Edit a checklist item */
+        Route::get('checklist-items/{id}/edit', 'ChecklistItemController@edit');
+        Route::put('/checklist-items/{id}', 'ChecklistItemController@update');
+
+        /* Delete a checklist item */
+        Route::delete('/checklist-items/{id}', 'ChecklistItemController@destroy');
     });
 });
 

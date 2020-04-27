@@ -37,7 +37,7 @@ class ChecklistController extends Controller
 
     /**
     * POST /checklists
-    * Process the form for adding a new book
+    * Process the form for adding a new checklist
     */
     public function store(Request $request)
     {
@@ -169,7 +169,7 @@ class ChecklistController extends Controller
 
     /**
     * Deletes the checklist
-    * DELETE /checklists/{id}/delete
+    * DELETE /checklists/{id}
     */
     public function destroy($id)
     {
