@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Inspection;
 use App\Checklist;
 use App\ChecklistItem;
+use App\User;
+use App\InspectionChecklist;
+use App\InspectionItem;
 
 class InspectionController extends Controller
 {
@@ -13,18 +16,22 @@ class InspectionController extends Controller
     # s/he will select a checklist, and all checklist_items associated with that checklist will be
     # copied to a new table associated with the inspections table, to avoid mutating the date in
     # the original checklist_items table (since the answers will differ between inspections).
-    # One possible ref is https://laraveldaily.com/quick-replication-of-model-row/
-    # Another ref is https://stackoverflow.com/questions/46991021/copy-one-row-from-one-table-to-another
 
-    # Another possibility is utilizing the create() method as outlined in the Laravel documentation:
-    # Ref: https://laravel.com/docs/7.x/eloquent-relationships#inserting-and-updating-related-models
-
-    public function index()
+    public function index(Request $request)
     {
+        # Query the database and return all inspections
         $inspections = Inspection::orderBy('rail_transit_agency')->orderBy('inspection_date')->get();
         
+        #Query the database for the current user, based on the $request object from the session
+        $user = User::where('id', '=', $request->user()->id)->first();
+
+        # Return inspections associated with the current user, if any
+        $my_inspections = $inspections->where('inspector_id', $user->id);
+        
         return view('inspections.index')->with([
-            'inspections' => $inspections
+            'inspections' => $inspections,
+            'user' => $user,
+            'myInspections' => $my_inspections
         ]);
     }
 }
