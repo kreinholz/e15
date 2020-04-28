@@ -7,7 +7,7 @@ use App\Inspection;
 use App\Checklist;
 use App\ChecklistItem;
 use App\User;
-use App\InspectionChecklist;
+use App\InspectionCl;
 use App\InspectionItem;
 
 class InspectionController extends Controller
@@ -77,7 +77,7 @@ class InspectionController extends Controller
 
         # Copy a 'snapshot' of the selected checklist and its associated checklist_items over to
         # the inspection_checklists and inspection_items database tables
-        $newInspectionChecklist = new InspectionChecklist();
+        $newInspectionChecklist = new InspectionCl();
         $newInspectionChecklist->title = $checklist->title;
         $newInspectionChecklist->inspector_id = $user->id;
         $newInspectionChecklist->save();
@@ -96,14 +96,14 @@ class InspectionController extends Controller
 
         # Now that the 3 associated tables have data saved to them, save the inspection itself
         $newInspection = new Inspection();
-        $newInspection->rail_transit_authority = $request->rail_transit_authority;
+        $newInspection->rail_transit_agency = $request->rail_transit_agency;
         $newInspection->inspection_date = $request->inspection_date;
         $newInspection->inspector_id = $user->id;
-        $newInspection->inspection_checklist_id = $newInspectionChecklist->id;
+        $newInspection->checklist_id = $newInspectionChecklist->id;
         $newInspection->save();
 
         return redirect('/inspections')->with([
-            'flash-alert' => 'Your inspection of '.$newInspection->rail_transit_authority.' with an inspection date of '.$newInspection->inspection_date.' was created.'
+            'flash-alert' => 'Your inspection of '.$newInspection->rail_transit_agency.' with an inspection date of '.$newInspection->inspection_date.' was created.'
         ]);
     }
 }

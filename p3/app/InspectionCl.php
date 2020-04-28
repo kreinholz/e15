@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InspectionChecklist extends Model
+class InspectionCl extends Model
 {
     # Define MANY-TO-MANY relationship between InspectionChecklists and InspectionItems
     # Ref: Week 12 CSCI E-15 notes/video 12.1

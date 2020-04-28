@@ -35,10 +35,10 @@ class CreateInspectionsTable extends Migration
 
             # Instantiate an unsigned new column to act as a foreign key
             # See https://github.com/susanBuck/e15-spring20/issues/38
-            $table->bigInteger('inspection_checklist_id')->unsigned();
+            $table->bigInteger('checklist_id')->unsigned();
 
             # Checklist FOREIGN KEY from checklists table
-            $table->foreign('inspection_checklist_id')->references('id')->on('inspection_checklists');
+            $table->foreign('checklist_id')->references('id')->on('inspection_cls');
         });
     }
 

@@ -14,7 +14,7 @@
             @else
             <ul>    
                 @foreach($inspections as $inspection) 
-                    <li><a href='/inspections/{{ $inspection->id }}'>{{ $inspection->date }} of {{ $inspection->rail_transit_authority }} on {{ $inspection->inspection_date }}</a></li>
+                    <li><a href='/inspections/{{ $inspection->id }}'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
                 @endforeach
             </ul>
             @endif
@@ -23,7 +23,7 @@
         @else
         <ul>    
             @foreach($myInspections as $inspection) 
-                <li><a href='/inspections/{{ $inspection->id }}'>{{ $inspection->date }} of {{ $inspection->rail_transit_authority }} on {{ $inspection->inspection_date }}</a></li>
+                <li><a href='/inspections/{{ $inspection->id }}'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
             @endforeach
         </ul>
         @endif
