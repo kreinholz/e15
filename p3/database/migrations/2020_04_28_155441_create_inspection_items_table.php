@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChecklistItemsTable extends Migration
+class CreateInspectionItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateChecklistItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('checklist_items', function (Blueprint $table) {
+        Schema::create('inspection_items', function (Blueprint $table) {
             # Auto-incrementing UNSIGNED BIGINT (primary key) equivalent column
             $table->id();
 
@@ -48,6 +48,6 @@ class CreateChecklistItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('checklist_items');
+        Schema::dropIfExists('inspection_items');
     }
 }
