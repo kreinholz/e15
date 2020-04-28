@@ -26,7 +26,7 @@ class InspectionController extends Controller
         # Query the database and return all inspections
         $inspections = Inspection::orderBy('rail_transit_agency')->orderBy('inspection_date')->get();
         
-        #Query the database for the current user, based on the $request object from the session
+        # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();
 
         # Return inspections associated with the current user, if any
