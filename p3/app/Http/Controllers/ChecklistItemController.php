@@ -69,7 +69,7 @@ class ChecklistItemController extends Controller
         $checklist_item = ChecklistItem::where('id', '=', $id)->first();
 
         return view('checklist-items.edit')->with([
-        'item' => $checklist_item
+            'item' => $checklist_item
         ]);
     }
 

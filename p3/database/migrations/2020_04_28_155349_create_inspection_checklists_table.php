@@ -22,6 +22,13 @@ class CreateInspectionChecklistsTable extends Migration
 
             # Add a title for this particular checklist, e.g. "Checklist for Reviewing the Rail Transit Agency Safety Plan"
             $table->string('title');
+
+            # Instantiate an unsigned new column to act as a foreign key
+            # See https://github.com/susanBuck/e15-spring20/issues/38
+            $table->bigInteger('inspector_id')->unsigned();
+            
+            # Inspector FOREIGN KEY from users table
+            $table->foreign('inspector_id')->references('id')->on('users');
         });
     }
 

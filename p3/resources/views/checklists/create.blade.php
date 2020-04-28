@@ -14,7 +14,7 @@
         <div class='details'>* Required fields</div>
         {{ csrf_field() }}
 
-        <label for='title'>Checklist Title</label>
+        <label for='title'>* Checklist Title</label>
         <input type='text' name='title' id='title' value='{{ old('title') }}'>
         @include('includes.error-field', ['fieldName' => 'title'])
 

@@ -31,7 +31,7 @@ class ChecklistController extends Controller
         $checklist_items = ChecklistItem::orderBy('item_number')->orderBy('created_at')->get();
     
         return view('checklists.create')->with([
-        'checklistItems' => $checklist_items
+            'checklistItems' => $checklist_items
         ]);
     }
 
@@ -98,9 +98,9 @@ class ChecklistController extends Controller
         $new_items = $checklist_items->diff($existing_items);
 
         return view('checklists.edit')->with([
-        'checklist' => $checklist,
-        'newItems' => $new_items,
-        'existingItems' => $existing_items
+            'checklist' => $checklist,
+            'newItems' => $new_items,
+            'existingItems' => $existing_items
         ]);
     }
 
