@@ -32,8 +32,10 @@
 @endif
 
 @if($inspection)
-<p><a href='/inspections/{{ $inspection->id }}/edit'>Edit this Inspection</a></p>
-<p><a href='/inspections/{{ $inspection->id }}/delete'>Delete this Inspection</a></p>
+    @if($user->job_title == 'Safety Oversight Manager' or $user->id == $inspection->inspector_id)
+    <p><a href='/inspections/{{ $inspection->id }}/edit'>Edit this Inspection</a></p>
+    <p><a href='/inspections/{{ $inspection->id }}/delete'>Delete this Inspection</a></p>
+    @endif
 @endif
 
 @endsection

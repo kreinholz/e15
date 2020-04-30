@@ -12,12 +12,6 @@ use App\InspectionItem;
 
 class InspectionController extends Controller
 {
-    # So much TO DO here. One thing that needs to be done, is when a user starts a new inspection,
-    # s/he will select a checklist, and all checklist_items associated with that checklist will be
-    # copied to a new table associated with the inspections table, to avoid mutating the date in
-    # the original checklist_items table (since the answers will differ between inspections).
-
-
     /**
      * GET /inspections
     */
@@ -141,21 +135,46 @@ class InspectionController extends Controller
     */
     public function edit(Request $request, $id)
     {
-        $checklist = Checklist::where('id', '=', $id)->first();
-        
-        $checklist_items = ChecklistItem::orderBy('item_number')->orderBy('created_at')->get();
-    
-        # Get the current checklist_items associated with this checklist
-        $existing_items = $checklist->checklist_items()->get();
+        # Validate the request data
+        # The `$request->validate` method takes an array of data
+        # where the keys are form inputs
+        # and the values are validation rules to apply to those inputs
+        $request->validate([
+            'rail_transit_agency' => 'required',
+            'inspection_date' => 'required|date',
+            'included' => 'boolean',
+            'page_reference' => 'integer',
+        ]);
 
-        # Compare the collection of all checklist_items to existing_items already associated with the checklist
-        # Ref: https://laravel.com/docs/5.2/collections#method-diff
-        $new_items = $checklist_items->diff($existing_items);
+        $inspection = Inspection::where('id', '=', $id)->first();
 
-        return view('checklists.edit')->with([
-            'checklist' => $checklist,
-            'newItems' => $new_items,
-            'existingItems' => $existing_items
+        $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
+
+        $inspection_items = $inspection_checklist->inspection_items()->get();
+
+        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+
+        # Query the database for the current user, based on the $request object from the session
+        $user = User::where('id', '=', $request->user()->id)->first();
+
+        # TO DO: This is where I will add code to update the correct row in the inspections table,
+        # the inspection_cls table (if the Safety Oversight Manager takes over the inspection from
+        # an ordinary user and therefore the inspector_id field needs to be updated), and the
+        # correct rows in the many-to-many associated inspection_items, where for the first time
+        # the inspector can fill in such information as a boolean for whether the item is included,
+        # the page reference, and comments. Note that none of these fields are marked as "required"
+        # because we don't want to force the inspector to submit one set of form data at the end of
+        # an inspection--we want him/her to be able to save updates as s/he goes along. When finished
+        # with an inspection, the inspector will check the box to change the boolean for completed
+        # from its default value of false to true.
+
+        return view('inspections.edit')->with([
+            'inspection' => $inspection,
+            'id' => $id,
+            'inspection_checklist' => $inspection_checklist,
+            'inspection_items' => $inspection_items,
+            'inspector' => $inspector,
+            'user' => $user
         ]);
     }
 }
