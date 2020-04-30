@@ -13,8 +13,12 @@
                 No inspections have been started yet...
             @else
             <ul>    
-                @foreach($inspections as $inspection) 
+                @foreach($inspections as $inspection)
+                    @if($inspection->completed == true)
                     <li><a href='/inspections/{{ $inspection->id }}'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
+                    @else
+                    <li><a href='/inspections/{{ $inspection->id }}/edit'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
+                    @endif
                 @endforeach
             </ul>
             @endif
@@ -23,7 +27,11 @@
         @else
         <ul>    
             @foreach($myInspections as $inspection) 
+                @if($inspection->completed == true)
                 <li><a href='/inspections/{{ $inspection->id }}'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
+                @else
+                <li><a href='/inspections/{{ $inspection->id }}/edit'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
+                @endif
             @endforeach
         </ul>
         @endif

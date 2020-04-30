@@ -37,8 +37,11 @@ class CreateInspectionsTable extends Migration
             # See https://github.com/susanBuck/e15-spring20/issues/38
             $table->bigInteger('checklist_id')->unsigned();
 
-            # Checklist FOREIGN KEY from checklists table
+            # Checklist FOREIGN KEY from inspection_cls (inspection checklists) table
             $table->foreign('checklist_id')->references('id')->on('inspection_cls');
+
+            # Inspection Completed BOOLEAN
+            $table->boolean('completed');
         });
     }
 

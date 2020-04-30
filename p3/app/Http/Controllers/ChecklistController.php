@@ -81,7 +81,7 @@ class ChecklistController extends Controller
         ]);
     }
 
-    /*
+    /**
      * GET /checklists/{id}/edit
     */
     public function edit(Request $request, $id)

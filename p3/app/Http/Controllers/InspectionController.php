@@ -19,13 +19,13 @@ class InspectionController extends Controller
 
 
     /**
-     * GET /checklists
+     * GET /inspections
     */
     public function index(Request $request)
     {
         # Query the database and return all inspections
         $inspections = Inspection::orderBy('rail_transit_agency')->orderBy('inspection_date')->get();
-        
+
         # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();
 
@@ -40,7 +40,7 @@ class InspectionController extends Controller
     }
 
     /**
-     * GET /checklists/create
+     * GET /inspections/create
     */
     public function create()
     {
@@ -72,7 +72,7 @@ class InspectionController extends Controller
         # Retrieve the checklist_items associated with the selected checklist
         $items = $checklist->checklist_items()->get();
 
-        #Query the database for the current user, based on the $request object from the session
+        # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();
 
         # Copy a 'snapshot' of the selected checklist and its associated checklist_items over to
@@ -100,10 +100,62 @@ class InspectionController extends Controller
         $newInspection->inspection_date = $request->inspection_date;
         $newInspection->inspector_id = $user->id;
         $newInspection->checklist_id = $newInspectionChecklist->id;
+        $newInspection->completed = false;
         $newInspection->save();
 
         return redirect('/inspections')->with([
             'flash-alert' => 'Your inspection of '.$newInspection->rail_transit_agency.' with an inspection date of '.$newInspection->inspection_date.' was created.'
+        ]);
+    }
+
+    /**
+     * GET /inspections/{id}
+     * Show the details for a completed inspection
+     */
+    public function show(Request $request, $id)
+    {
+        $inspection = Inspection::where('id', '=', $id)->first();
+
+        $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
+
+        $inspection_items = $inspection_checklist->inspection_items()->get();
+
+        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+
+        # Query the database for the current user, based on the $request object from the session
+        $user = User::where('id', '=', $request->user()->id)->first();
+
+        return view('inspections.show')->with([
+            'inspection' => $inspection,
+            'id' => $id,
+            'inspection_checklist' => $inspection_checklist,
+            'inspection_items' => $inspection_items,
+            'inspector' => $inspector,
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * GET /inspections/{id}/edit
+     * Take the user to a page where s/he can edit an in-progress inspection
+    */
+    public function edit(Request $request, $id)
+    {
+        $checklist = Checklist::where('id', '=', $id)->first();
+        
+        $checklist_items = ChecklistItem::orderBy('item_number')->orderBy('created_at')->get();
+    
+        # Get the current checklist_items associated with this checklist
+        $existing_items = $checklist->checklist_items()->get();
+
+        # Compare the collection of all checklist_items to existing_items already associated with the checklist
+        # Ref: https://laravel.com/docs/5.2/collections#method-diff
+        $new_items = $checklist_items->diff($existing_items);
+
+        return view('checklists.edit')->with([
+            'checklist' => $checklist,
+            'newItems' => $new_items,
+            'existingItems' => $existing_items
         ]);
     }
 }
