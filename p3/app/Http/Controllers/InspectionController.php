@@ -166,13 +166,13 @@ class InspectionController extends Controller
         # where the keys are form inputs
         # and the values are validation rules to apply to those inputs
         $request->validate([
-            'rail_transit_agency' => 'required',
-            'inspection_date' => 'required|date',
-        ]);
+                    'rail_transit_agency' => 'required',
+                    'inspection_date' => 'required|date',
+                ]);
 
         # We cannot simply grab one each of:
-#           'included' => 'boolean',
-#           'page_reference' => 'integer',
+        #           'included' => 'boolean',
+        #           'page_reference' => 'integer',
         # Because each inspection_item has one, and we are dealing with multiple inspection_items. So,
         # we either have to update each separately, or grab them in arrays and iterate over them...
 
@@ -212,6 +212,16 @@ class InspectionController extends Controller
         # Now that we've updated the appropriate row in the inspection table, it's time to update
         # the inspection_items indirectly associated with the inspection via the inspection_cls
         # table and its Many-to-Many relationship with inspection_items.
+        
+        # First step, we want to convert all our numbered form data for included, page_reference,
+        # and comments into a more usable format
+        $inspection_items = [];
+        # Now that we've initialized an empty object to hold our data, we need to loop through the
+        # $request data and save each included, page_reference, and comment to the $inspection_items
+        # array, and add an id field since we can't rely on the array index to accurately reflect what's
+        # in the database. (For starters, an array starts indexing at 0, and our inspection_items begin
+        # at 1, to say nothing of the possibility of skipped items not included in this inspection checklist)
+        
 
         return redirect('/inspections/'.$id.'/edit')->with([
             'flash-alert' => 'Your changes were saved.'

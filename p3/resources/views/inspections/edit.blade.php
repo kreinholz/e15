@@ -23,19 +23,19 @@
         <input type='date' name='inspection_date' id='inspection_date' value='{{ old('inspection_date', $inspection->inspection_date) }}'>
         @include('includes.error-field', ['fieldName' => 'inspection_date'])
 
-        <label for='inspection_items'>Inspection Checklist Items</label>
+        <label for='inspection_items'>Inspection Items</label>
         @foreach($inspectionItems as $item)
             <p></p>
             <h4>{{ $item->item_number }}. {{ $item->item_name }}</h4>
             <p>{{ $item->plan_requirement }}
             <!-- boxes should start checked or unchecked depending on what's stored in the database -->
-            <input type='checkbox' name='inspection_items[]' value='{{ $item->included }}' @if($item->included) checked @endif>
+            <input type='checkbox' name='included_{{ $item->id }}' value='{{ $item->included }}' @if($item->included) checked @endif>
             <p></p>
             <label for='page_reference'>Page Reference</label>
-            <input type='text' name='page_reference' value='{{ old('item->page_reference', $item->page_reference) }}'>
+            <input type='text' name='page_reference_{{ $item->id }}' value='{{ old('item->page_reference', $item->page_reference) }}'>
             @include('includes.error-field', ['fieldName' => 'page_reference'])
             <label for='comments'>Comments</label>
-            <textarea name='comments'>{{ old('item->comments', $item->comments) }}</textarea>
+            <textarea name='comments_{{ $item->id }}'>{{ old('item->comments', $item->comments) }}</textarea>
             @include('includes.error-field', ['fieldName' => 'comments'])
             <p></p>
         @endforeach

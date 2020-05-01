@@ -142,7 +142,7 @@ class ChecklistController extends Controller
         if ($checklist_items) {
             $checklist->checklist_items()->attach($checklist_items);
         }
-        
+
         return redirect('/checklists/'.$id.'/edit')->with([
             'flash-alert' => 'Your changes were saved.'
         ]);
