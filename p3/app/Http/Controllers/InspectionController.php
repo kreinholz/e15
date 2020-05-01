@@ -135,6 +135,32 @@ class InspectionController extends Controller
     */
     public function edit(Request $request, $id)
     {
+        $inspection = Inspection::where('id', '=', $id)->first();
+
+        $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
+
+        $inspection_items = $inspection_checklist->inspection_items()->get();
+
+        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+
+        # Query the database for the current user, based on the $request object from the session
+        $user = User::where('id', '=', $request->user()->id)->first();
+
+        return view('inspections.edit')->with([
+            'inspection' => $inspection,
+            'id' => $id,
+            'inspectionChecklist' => $inspection_checklist,
+            'inspectionItems' => $inspection_items,
+            'inspector' => $inspector,
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * PUT /inspections/{$id}
+     */
+    public function update(Request $request, $id)
+    {
         # Validate the request data
         # The `$request->validate` method takes an array of data
         # where the keys are form inputs
@@ -142,9 +168,13 @@ class InspectionController extends Controller
         $request->validate([
             'rail_transit_agency' => 'required',
             'inspection_date' => 'required|date',
-            'included' => 'boolean',
-            'page_reference' => 'integer',
         ]);
+
+        # We cannot simply grab one each of:
+#           'included' => 'boolean',
+#           'page_reference' => 'integer',
+        # Because each inspection_item has one, and we are dealing with multiple inspection_items. So,
+        # we either have to update each separately, or grab them in arrays and iterate over them...
 
         $inspection = Inspection::where('id', '=', $id)->first();
 
@@ -168,13 +198,23 @@ class InspectionController extends Controller
         # with an inspection, the inspector will check the box to change the boolean for completed
         # from its default value of false to true.
 
-        return view('inspections.edit')->with([
-            'inspection' => $inspection,
-            'id' => $id,
-            'inspection_checklist' => $inspection_checklist,
-            'inspection_items' => $inspection_items,
-            'inspector' => $inspector,
-            'user' => $user
+        $inspection->id = $request->id;
+        $inspection->rail_transit_agency = $request->rail_transit_agency;
+        $inspection->inspection_date = $request->inspection_date;
+        # Normally the inspector won't change, but if a new inspector takes over, we want the
+        # inspection to be associated with that new inspector. Note that we're updating the
+        # inspector in the inspections table, but not in the inspection_cls (inspection_checklists)
+        # table, so we can retain information in the database about which inspector originally began
+        # the inspection, in case the Safety Oversight Manager wants to track this information.
+        $inspection->inspector_id = $user->id;
+        $inspection->save();
+
+        # Now that we've updated the appropriate row in the inspection table, it's time to update
+        # the inspection_items indirectly associated with the inspection via the inspection_cls
+        # table and its Many-to-Many relationship with inspection_items.
+
+        return redirect('/inspections/'.$id.'/edit')->with([
+            'flash-alert' => 'Your changes were saved.'
         ]);
     }
 }
