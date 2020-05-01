@@ -161,6 +161,8 @@ class InspectionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        dump($request);
+        /*
         # Validate the request data
         # The `$request->validate` method takes an array of data
         # where the keys are form inputs
@@ -212,7 +214,7 @@ class InspectionController extends Controller
         # Now that we've updated the appropriate row in the inspection table, it's time to update
         # the inspection_items indirectly associated with the inspection via the inspection_cls
         # table and its Many-to-Many relationship with inspection_items.
-        
+
         # First step, we want to convert all our numbered form data for included, page_reference,
         # and comments into a more usable format
         $inspection_items = [];
@@ -221,10 +223,11 @@ class InspectionController extends Controller
         # array, and add an id field since we can't rely on the array index to accurately reflect what's
         # in the database. (For starters, an array starts indexing at 0, and our inspection_items begin
         # at 1, to say nothing of the possibility of skipped items not included in this inspection checklist)
-        
+
 
         return redirect('/inspections/'.$id.'/edit')->with([
             'flash-alert' => 'Your changes were saved.'
         ]);
+        */
     }
 }
