@@ -6,6 +6,10 @@
 
 @section('content')
 
+@if($user->job_title != 'Safety Oversight Manager' and $user->id != $inspection->inspector_id)
+Sorry, you don't have permission to edit this inspection.
+@else
+
     <h1>Continue or Edit an Inspection</h1>
 
     <p>This form will allow you to edit an in-progress or completed inspection. You can save your updates at any time--you do not need to complete the writeup for every inspection item prior to saving your changes. When you're satisfied this inspection is complete, please check the box to indicate the inspection is complete.</p>
@@ -46,4 +50,5 @@
 
     </form>
 <p></p>
+@endif
 @endsection
