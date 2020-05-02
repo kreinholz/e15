@@ -40,7 +40,7 @@
             <p></p>
         @endforeach
         <p></p>
-        <input type='checkbox' name='completed' value='{{ $inspection->completed }}' @if($inspection->completed) checked @endif>This Inspection is Complete (Finalize Inspection).
+        <input type='checkbox' name='completed' value='{{ $inspection->id }}' @if($inspection->completed) checked @endif>This Inspection is Complete (Finalize Inspection).
         <p></p>
         <input type='submit' class='btn btn-primary' value='Save Changes'>
 

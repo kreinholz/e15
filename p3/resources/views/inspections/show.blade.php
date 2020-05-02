@@ -9,9 +9,11 @@
 @if(!$inspection) 
     Inspection not found. <a href='/inspections'>See what inspections are available.</a>
 @else
-<h1>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} by {{ $inspector->first_name }} {{ $inspector->last_name }}</h1>
+<h1>Checklist for Reviewing the Rail Transit Agency Safety Plan</h1>
+<h4>Rail Transit Agency (RTA): {{ $inspection->rail_transit_agency }}</h4>
+<h4>State Oversight Agency Reviewer: {{ $inspector->first_name }} {{ $inspector->last_name }} &emsp; Date: {{ date('M d, Y', strtotime($inspection->inspection_date)) }}</h4>
 @endif
-
+<p></p>
 @if($inspection_items)
     <ul>
         @foreach($inspection_items as $item)

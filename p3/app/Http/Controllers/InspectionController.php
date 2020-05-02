@@ -224,9 +224,22 @@ class InspectionController extends Controller
             $inspection_item->save();
         }
 
+        # To do: check for and update the boolean on whether the inspection is complete.
+        $completed = $request->completed;
+        if ($completed) {
+            $inspection->completed = true;
+            $inspection->save();
+        }
 
-        return redirect('/inspections/'.$id.'/edit')->with([
-            'flash-alert' => 'Your changes were saved.'
-        ]);
+        # Conditional redirect depending on whether inspection was marked completed
+        if ($inspection->completed == true) {
+            return redirect('/inspections/'.$id)->with([
+                'flash-alert' => 'Your changes were saved and the inspection marked complete.'
+            ]);
+        } else {
+            return redirect('/inspections/'.$id.'/edit')->with([
+                'flash-alert' => 'Your changes were saved.'
+            ]);
+        }
     }
 }

@@ -28,9 +28,9 @@
         <ul>    
             @foreach($myInspections as $inspection) 
                 @if($inspection->completed == true)
-                <li><a href='/inspections/{{ $inspection->id }}'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
+                <li><a href='/inspections/{{ $inspection->id }}'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} (Completed)</a></li>
                 @else
-                <li><a href='/inspections/{{ $inspection->id }}/edit'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }}</a></li>
+                <li><a href='/inspections/{{ $inspection->id }}/edit'>Inspection of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} (In-Progress)</a></li>
                 @endif
             @endforeach
         </ul>
