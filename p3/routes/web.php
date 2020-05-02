@@ -33,6 +33,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('inspections/{id}/edit', 'InspectionController@edit');
     Route::put('/inspections/{id}', 'InspectionController@update');
 
+    /* Show the page to confirm deletion of an inspection */
+    Route::get('/inspections/{id}/delete', 'InspectionController@delete');
+
     /* Delete an inspection */
     Route::delete('/inspections/{id}', 'InspectionController@destroy');
 

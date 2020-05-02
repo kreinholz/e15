@@ -50,5 +50,6 @@ Sorry, you don't have permission to edit this inspection.
 
     </form>
 <p></p>
+<p><a href='/inspections/{{ $inspection->id }}/delete'><button class='btn btn-danger'>Delete this Inspection</button></a></p>
 @endif
 @endsection

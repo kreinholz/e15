@@ -242,4 +242,61 @@ class InspectionController extends Controller
             ]);
         }
     }
+
+    /**
+    * Asks user to confirm they want to delete the inspection
+    * GET /inspections/{id}/delete
+    */
+    public function delete(Request $request, $id)
+    {
+        $inspection = Inspection::where('id', '=', $id)->first();
+
+        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+
+        # Query the database for the current user, based on the $request object from the session
+        $user = User::where('id', '=', $request->user()->id)->first();
+
+        if (!$inspection) {
+            return redirect('/inspections')->with([
+                'flash-alert' => 'Inspection not found'
+            ]);
+        }
+
+        if ($inspector != $user and $user->job_title != 'Safety Oversight Manager') {
+            return redirect('/inspections')->with([
+                'flash-alert' => 'You do not have permission to delete this inspection'
+            ]);
+        } else {
+            return view('inspections.delete')->with([
+                'inspection' => $inspection,
+                'inspector' => $inspector,
+                'user' => $user
+            ]);
+        }
+    }
+
+    /**
+    * Deletes the inspection
+    * DELETE /inspections/{id}
+    */
+    public function destroy($id)
+    {
+        $inspection = Inspection::where('id', '=', $id)->first();
+
+        $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
+
+        $inspection_items = $inspection_checklist->inspection_items()->get();
+
+        $inspection_checklist->inspection_items()->detach();
+
+        $inspection->delete();
+        $inspection_checklist->delete();
+        foreach ($inspection_items as $item) {
+            $item->delete();
+        }
+
+        return redirect('/inspections')->with([
+            'flash-alert' => 'The Inspection of ' . $inspection->rail_transit_agency . ' was removed.'
+        ]);
+    }
 }
