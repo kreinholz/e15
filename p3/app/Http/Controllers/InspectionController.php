@@ -161,44 +161,26 @@ class InspectionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dump($request);
-        /*
         # Validate the request data
         # The `$request->validate` method takes an array of data
         # where the keys are form inputs
         # and the values are validation rules to apply to those inputs
         $request->validate([
-                    'rail_transit_agency' => 'required',
-                    'inspection_date' => 'required|date',
-                ]);
-
-        # We cannot simply grab one each of:
-        #           'included' => 'boolean',
-        #           'page_reference' => 'integer',
-        # Because each inspection_item has one, and we are dealing with multiple inspection_items. So,
-        # we either have to update each separately, or grab them in arrays and iterate over them...
+            'rail_transit_agency' => 'required',
+            'inspection_date' => 'required|date',
+        ]);
 
         $inspection = Inspection::where('id', '=', $id)->first();
 
         $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
 
+        # Get only the inspection_items we need to work with, thanks to our Many-to-Many relationship
         $inspection_items = $inspection_checklist->inspection_items()->get();
 
         $inspector = User::where('id', '=', $inspection->inspector_id)->first();
 
         # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();
-
-        # TO DO: This is where I will add code to update the correct row in the inspections table,
-        # the inspection_cls table (if the Safety Oversight Manager takes over the inspection from
-        # an ordinary user and therefore the inspector_id field needs to be updated), and the
-        # correct rows in the many-to-many associated inspection_items, where for the first time
-        # the inspector can fill in such information as a boolean for whether the item is included,
-        # the page reference, and comments. Note that none of these fields are marked as "required"
-        # because we don't want to force the inspector to submit one set of form data at the end of
-        # an inspection--we want him/her to be able to save updates as s/he goes along. When finished
-        # with an inspection, the inspector will check the box to change the boolean for completed
-        # from its default value of false to true.
 
         $inspection->id = $request->id;
         $inspection->rail_transit_agency = $request->rail_transit_agency;
@@ -215,19 +197,36 @@ class InspectionController extends Controller
         # the inspection_items indirectly associated with the inspection via the inspection_cls
         # table and its Many-to-Many relationship with inspection_items.
 
-        # First step, we want to convert all our numbered form data for included, page_reference,
-        # and comments into a more usable format
-        $inspection_items = [];
-        # Now that we've initialized an empty object to hold our data, we need to loop through the
-        # $request data and save each included, page_reference, and comment to the $inspection_items
-        # array, and add an id field since we can't rely on the array index to accurately reflect what's
-        # in the database. (For starters, an array starts indexing at 0, and our inspection_items begin
-        # at 1, to say nothing of the possibility of skipped items not included in this inspection checklist)
+        # Get our arrays of form data for inspection_items that need updating
+        $includeds = $request->includeds;
+        $page_references = $request->page_references;
+        $comments = $request->comments;
+
+        # Loop through $includeds array and set any database booleans to true for checked boxes
+        foreach ($includeds as $included) {
+            $inspection_item = $inspection_items->where('id', $included)->first();
+            $inspection_item->included = true;
+            $inspection_item->save();
+        }
+        # Loop through $page_references array and store any updates to database
+        # Ref for keeping track of current index: https://stackoverflow.com/a/141114
+        foreach ($page_references as $i=>$page_reference) {
+            $inspection_item = $inspection_items->where('id', $i)->first();
+            $inspection_item->page_reference = $page_reference;
+            $inspection_item->save();
+        }
+
+        # Loop through $page_references array and store any updates to database
+        # Ref for keeping track of current index: https://stackoverflow.com/a/141114
+        foreach ($comments as $i=>$comment) {
+            $inspection_item = $inspection_items->where('id', $i)->first();
+            $inspection_item->comments = $comment;
+            $inspection_item->save();
+        }
 
 
         return redirect('/inspections/'.$id.'/edit')->with([
             'flash-alert' => 'Your changes were saved.'
         ]);
-        */
     }
 }

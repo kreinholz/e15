@@ -29,13 +29,13 @@
             <h4>{{ $item->item_number }}. {{ $item->item_name }}</h4>
             <p>{{ $item->plan_requirement }}
             <!-- boxes should start checked or unchecked depending on what's stored in the database -->
-            <input type='checkbox' name='included[]' value='{{ $item->included }}' @if($item->included) checked @endif>
+            <input type='checkbox' name='includeds[{{ $item->id }}]' value='{{ $item->id }}' @if($item->included) checked @endif>
             <p></p>
             <label for='page_reference'>Page Reference</label>
-            <input type='text' name='page_reference[]' value='{{ old('item->page_reference', $item->page_reference) }}'>
+            <input type='text' name='page_references[{{ $item->id }}]' value='{{ old('item->page_reference', $item->page_reference) }}'>
             @include('includes.error-field', ['fieldName' => 'page_reference'])
             <label for='comments'>Comments</label>
-            <textarea name='comments[]'>{{ old('item->comments', $item->comments) }}</textarea>
+            <textarea name='comments[{{ $item->id }}]'>{{ old('item->comments', $item->comments) }}</textarea>
             @include('includes.error-field', ['fieldName' => 'comments'])
             <p></p>
         @endforeach
