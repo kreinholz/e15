@@ -122,8 +122,8 @@ class InspectionController extends Controller
         return view('inspections.show')->with([
             'inspection' => $inspection,
             'id' => $id,
-            'inspection_checklist' => $inspection_checklist,
-            'inspection_items' => $inspection_items,
+            'inspectionChecklist' => $inspection_checklist,
+            'inspectionItems' => $inspection_items,
             'inspector' => $inspector,
             'user' => $user
         ]);

@@ -15,9 +15,9 @@
 <h4>State Oversight Agency Reviewer: {{ $inspector->first_name }} {{ $inspector->last_name }} &emsp; Date: {{ date('M d, Y', strtotime($inspection->inspection_date)) }}</h4>
 @endif
 <p></p>
-@if($inspection_items)
+@if($inspectionItems)
     <ul>
-        @foreach($inspection_items as $item)
+        @foreach($inspectionItems as $item)
             <h4>{{ $item->item_number }}. {{ $item->item_name }}</h4>
             <p>{{ $item->plan_requirement }}</p>
             <p>

@@ -40,7 +40,7 @@ class InspectionItemsTableSeeder extends Seeder
 
         foreach ($checklist_items_list_2 as $item) {
             $inspection_item = InspectionItem::updateOrCreate(
-                ['item_number' => $item->item_number, 'item_name' => $item->item_name, 'plan_requirement' => $item->plan_requirement, 'included' => true, 'page_reference' => rand(1, 20), 'comments' => 'This is a test comment generated from seed data.']
+                ['item_number' => $item->item_number, 'item_name' => $item->item_name, 'plan_requirement' => $item->plan_requirement, 'included' => true, 'page_reference' => rand(1, 20), 'comments' => 'This is a test comment that was generated from seed data.']
             );
         }
 
