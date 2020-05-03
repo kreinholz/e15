@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ChecklistItemsTableSeeder::class);
         $this->call(ChecklistsTableSeeder::class);
         $this->call(ChecklistChecklistItemTableSeeder::class);
-        // $this->call(InspectionsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
+        $this->call(InspectionClsTableSeeder::class);
+        $this->call(InspectionItemsTableSeeder::class);
+        $this->call(InspectionClInspectionItemTableSeeder::class);
+        $this->call(InspectionsTableSeeder::class);
     }
 }
