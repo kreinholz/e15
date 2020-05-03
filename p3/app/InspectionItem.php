@@ -10,7 +10,7 @@ class InspectionItem extends Model
     # Ref: https://laravel.com/docs/7.x/eloquent-relationships#many-to-many
     public function inspection_cls()
     {
-        return $this->belongsToMany('App\InspectionCls')
+        return $this->belongsToMany('App\InspectionCl')
             ->withTimestamps();
     }
 }

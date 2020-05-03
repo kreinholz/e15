@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\User;
-use App\InspectionCls;
+use App\InspectionCl;
 use App\Inspection;
 
 class InspectionsTableSeeder extends Seeder
@@ -26,7 +26,7 @@ class InspectionsTableSeeder extends Seeder
         
         # Now that we've retrieved data from Users and Checklists, seed new data to InspectionCls
         $inspection_1 = Inspection::updateOrCreate(
-            ['rail_transit_agency' => 'Acme Railway Company', 'inspector_id' => $inspector_1->id, 'inspection_date' => '2020-03-19', 'checklist_id' => $inspection_checklist_1->id]
+            ['rail_transit_agency' => 'Acme Railway Company', 'inspector_id' => $inspector_1->id, 'inspection_date' => '2020-03-19', 'checklist_id' => $inspection_checklist_1->id, 'completed' => false]
         );
         
         $inspection_2 = Inspection::updateOrCreate(
@@ -34,7 +34,7 @@ class InspectionsTableSeeder extends Seeder
         );
         
         $inspection_3 = Inspection::updateOrCreate(
-            ['rail_transit_agency' => 'Zebra Railways', 'inspector_id' => $inspector_2->id, 'inspection_date' => '2020-05-03', 'checklist_id' => $inspection_checklist_2->id]
+            ['rail_transit_agency' => 'Zebra Railways', 'inspector_id' => $inspector_2->id, 'inspection_date' => '2020-05-03', 'checklist_id' => $inspection_checklist_2->id, 'completed' => false]
         );
     }
 }

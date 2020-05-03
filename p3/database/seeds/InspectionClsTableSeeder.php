@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Checklist;
-use App\InspectionCls;
+use App\InspectionCl;
 use App\User;
 
 class InspectionClsTableSeeder extends Seeder

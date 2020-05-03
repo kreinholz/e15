@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Checklist;
-use App\InspectionCls;
+use App\InspectionCl;
 use App\ChecklistItem;
 use App\ChecklistChecklistItem;
 use App\InspectionItem;
@@ -24,8 +24,12 @@ class InspectionItemsTableSeeder extends Seeder
 
         # Retrieve the 2 sets of ChecklistItems associated with the 2 Checklists
         $checklist_items = ChecklistItem::all();
-        $checklist_items_list_1 = $checklist_items->where($checklist->id, '=', '1')->get();
-        $checklist_items_list_2 = $checklist_items->where($checklist->id, '=', '2')->get();
+        $checklists = Checklist::all();
+        $checklist_1 = $checklists->where('id', '=', '1')->first();
+        $checklist_2 = $checklists->where('id', '=', '2')->first();
+        $checklist_items_list_1 = $checklist_1->checklist_items()->orderBy('item_number')->orderBy('created_at')->get();
+        $checklist_items_list_3 = $checklist_2->checklist_items()->orderBy('item_number')->orderBy('created_at')->get();
+        $checklist_items_list_2 = $checklist_items_list_1;
 
         # Now that data is retrieved, seed to InspectionItems
         foreach ($checklist_items_list_1 as $item) {
