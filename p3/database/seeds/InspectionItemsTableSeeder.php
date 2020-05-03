@@ -28,8 +28,8 @@ class InspectionItemsTableSeeder extends Seeder
         $checklist_1 = $checklists->where('id', '=', '1')->first();
         $checklist_2 = $checklists->where('id', '=', '2')->first();
         $checklist_items_list_1 = $checklist_1->checklist_items()->orderBy('item_number')->orderBy('created_at')->get();
-        $checklist_items_list_3 = $checklist_2->checklist_items()->orderBy('item_number')->orderBy('created_at')->get();
-        $checklist_items_list_2 = $checklist_items_list_1;
+        $checklist_items_list_2 = $checklist_2->checklist_items()->orderBy('item_number')->orderBy('created_at')->get();
+        $checklist_items_list_3 = $checklist_items_list_1;
 
         # Now that data is retrieved, seed to InspectionItems
         foreach ($checklist_items_list_1 as $item) {

@@ -30,11 +30,11 @@ class InspectionsTableSeeder extends Seeder
         );
         
         $inspection_2 = Inspection::updateOrCreate(
-            ['rail_transit_agency' => 'Atlantic Railway Authority', 'inspector_id' => $inspector_2->id, 'inspection_date' => '2020-04-15', 'checklist_id' => $inspection_checklist_1->id, 'completed' => true]
+            ['rail_transit_agency' => 'Atlantic Railway Authority', 'inspector_id' => $inspector_2->id, 'inspection_date' => '2020-04-15', 'checklist_id' => $inspection_checklist_2->id, 'completed' => true]
         );
         
         $inspection_3 = Inspection::updateOrCreate(
-            ['rail_transit_agency' => 'Zebra Railways', 'inspector_id' => $inspector_2->id, 'inspection_date' => '2020-05-03', 'checklist_id' => $inspection_checklist_2->id, 'completed' => false]
+            ['rail_transit_agency' => 'Zebra Railways', 'inspector_id' => $inspector_2->id, 'inspection_date' => '2020-05-03', 'checklist_id' => $inspection_checklist_3->id, 'completed' => false]
         );
     }
 }
