@@ -116,13 +116,19 @@ class InspectionController extends Controller
 
         $inspector = User::where('id', '=', $inspection->inspector_id)->first();
 
+        $original_inspector = null;
+        
+        if ($inspection->inspector_id != $inspection_checklist->inspector_id) {
+            $original_inspector = User::where('id', '=', $inspection_checklist->inspector_id)->first();
+        }
+
         # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();
 
         return view('inspections.show')->with([
             'inspection' => $inspection,
             'id' => $id,
-            'inspectionChecklist' => $inspection_checklist,
+            'originalInspector' => $original_inspector,
             'inspectionItems' => $inspection_items,
             'inspector' => $inspector,
             'user' => $user

@@ -14,6 +14,9 @@ Agency Safety Plan Review not found. <a href='/inspections'>See what Agency Safe
 <h4>Rail Transit Agency (RTA): {{ $inspection->rail_transit_agency }}</h4>
 <h4>State Oversight Agency Reviewer: {{ $inspector->first_name }} {{ $inspector->last_name }} &emsp; Date: {{ date('M d, Y', strtotime($inspection->inspection_date)) }}</h4>
 @endif
+@if($originalInspector)
+<h4>Review originally started by: {{ $originalInspector->first_name }} {{ $originalInspector->last_name }}</h4>
+@endif
 <p></p>
 @if($inspectionItems)
     <ul>
