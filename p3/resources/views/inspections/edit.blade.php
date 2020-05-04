@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Continue or Edit an Inspection
+    Continue or Edit an Agency Safety Plan Review
 @endsection
 
 @section('content')
@@ -10,24 +10,24 @@
 Sorry, you don't have permission to edit this inspection.
 @else
 
-    <h1>Continue or Edit an Inspection</h1>
+    <h1>Continue or Edit an Agency Safety Plan Review</h1>
 
-    <p>This form will allow you to edit an in-progress or completed inspection. You can save your updates at any time--you do not need to complete the writeup for every inspection item prior to saving your changes. When you're satisfied this inspection is complete, please check the box to indicate the inspection is complete.</p>
+    <p>This form will allow you to edit an in-progress or completed Agency Safety Plan Review. You can save your updates at any time--you do not need to complete the writeup for every item prior to saving your changes. When you're satisfied this Agency Safety Plan Review is complete, please check the box to indicate it is complete.</p>
 
     <form method='POST' action='/inspections/{{ $inspection->id }}'>
         <div class='details'>* Required fields</div>
         {{ csrf_field() }}
         {{  method_field('put') }}
 
-        <label for='rail_transit_agency'>* Rail Transit Agency Being Inspected</label>
+        <label for='rail_transit_agency'>* Rail Transit Agency Being Reviewed</label>
         <input type='text' name='rail_transit_agency' id='rail_transit_agency' value='{{ old('rail_transit_agency', $inspection->rail_transit_agency) }}'>
         @include('includes.error-field', ['fieldName' => 'rail_transit_agency'])
 
-        <label for='inspection_date'>* Date of Inspection</label>
+        <label for='inspection_date'>* Date of Agency Safety Plan Review</label>
         <input type='date' name='inspection_date' id='inspection_date' value='{{ old('inspection_date', $inspection->inspection_date) }}'>
         @include('includes.error-field', ['fieldName' => 'inspection_date'])
 
-        <label for='inspection_items'>Inspection Items</label>
+        <label for='inspection_items'>Agency Safety Plan Review Items</label>
         @foreach($inspectionItems as $item)
             <p></p>
             <h4>{{ $item->item_number }}. {{ $item->item_name }}</h4>
@@ -44,12 +44,12 @@ Sorry, you don't have permission to edit this inspection.
             <p></p>
         @endforeach
         <p></p>
-        <input type='checkbox' name='completed' value='{{ $inspection->id }}' @if($inspection->completed) checked @endif>This Inspection is Complete (Finalize Inspection).
+        <input type='checkbox' name='completed' value='{{ $inspection->id }}' @if($inspection->completed) checked @endif>This Agency Safety Plan Review is Complete.
         <p></p>
         <input type='submit' class='btn btn-primary' value='Save Changes'>
 
     </form>
 <p></p>
-<p><a href='/inspections/{{ $inspection->id }}/delete'><button class='btn btn-danger'>Delete this Inspection</button></a></p>
+<p><a href='/inspections/{{ $inspection->id }}/delete'><button class='btn btn-danger'>Delete this Agency Safety Plan Review</button></a></p>
 @endif
 @endsection

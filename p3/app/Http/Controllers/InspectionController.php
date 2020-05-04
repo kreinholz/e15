@@ -208,6 +208,16 @@ class InspectionController extends Controller
             $inspection_item->included = true;
             $inspection_item->save();
         }
+
+        # Look for unchecked included checkboxes and set their value to false in the database
+        # Ref: https://www.php.net/manual/en/function.in-array.php
+        foreach ($inspection_items as $item) {
+            if ($item->included and !in_array($item->id, $includeds)) {
+                $item->included = false;
+                $item->save();
+            }
+        }
+
         # Loop through $page_references array and store any updates to database
         # Ref for keeping track of current index: https://stackoverflow.com/a/141114
         foreach ($page_references as $i=>$page_reference) {
@@ -225,9 +235,13 @@ class InspectionController extends Controller
         }
 
         # Check for and update the boolean on whether the inspection is complete.
+        # The else allows a user to edit an inspection marked completed and uncheck the completed box
         $completed = $request->completed;
         if ($completed) {
             $inspection->completed = true;
+            $inspection->save();
+        } else {
+            $inspection->completed = false;
             $inspection->save();
         }
 

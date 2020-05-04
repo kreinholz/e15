@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('title')
-{{ $inspection ? $inspection->rail_transit_agency : 'Inspection not found' }}
+{{ $inspection ? $inspection->rail_transit_agency : 'Agency Safety Plan Review not found' }}
 @endsection
 
 @section('content')
 
 @if(!$inspection) 
-    Inspection not found. <a href='/inspections'>See what inspections are available.</a>
+Agency Safety Plan Review not found. <a href='/inspections'>See what Agency Safety Plan Reviews are available.</a>
 @else
 
 <h1>Checklist for Reviewing the Rail Transit Agency Safety Plan</h1>
@@ -36,8 +36,8 @@
 
 @if($inspection)
     @if($user->job_title == 'Safety Oversight Manager' or $user->id == $inspection->inspector_id)
-    <p><a href='/inspections/{{ $inspection->id }}/edit'>Edit this Inspection</a></p>
-    <p><a href='/inspections/{{ $inspection->id }}/delete'>Delete this Inspection</a></p>
+    <p><a href='/inspections/{{ $inspection->id }}/edit'>Edit this Agency Safety Plan Review</a></p>
+    <p><a href='/inspections/{{ $inspection->id }}/delete'>Delete this Agency Safety Plan Review</a></p>
     @endif
 @endif
 

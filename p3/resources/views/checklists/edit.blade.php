@@ -8,7 +8,7 @@
 
     <h1>Edit Existing Checklist</h1>
 
-    <p>This form will allow you to edit an existing checklist. Select the inspection items you want your checklist to contain, or deselect those you want to remove.</p>
+    <p>This form will allow you to edit an existing checklist. Select the Agency Safety Plan Review items you want your checklist to contain, or deselect those you want to remove.</p>
 
     <form method='POST' action='/checklists/{{ $checklist->id }}'>
         <div class='details'>* Required fields</div>

@@ -1,25 +1,25 @@
 @extends('layouts.master')
 
 @section('title')
-    Start a New Inspection
+    Start a New Agency Safety Plan Review
 @endsection
 
 @section('content')
 
-    <h1>Start a New Inspection</h1>
+    <h1>Start a New Agency Safety Plan Reviewn</h1>
 
     @if(count($checklists) > 0) 
-    <p>This form will allow you to start a new inspection. Select the checklist you want to use for this inspection.</p>
+    <p>This form will allow you to start a new Agency Safety Plan Review. Select the checklist you want to use for this Agency Safety Plan Review.</p>
 
     <form method='POST' action='/inspections'>
         <div class='details'>* Required fields</div>
         {{ csrf_field() }}
 
-        <label for='rail_transit_agency'>* Rail Transit Agency Being Inspected</label>
+        <label for='rail_transit_agency'>* Rail Transit Agency Being Reviewed</label>
         <input type='text' name='rail_transit_agency' id='rail_transit_agency' value='{{ old('rail_transit_agency') }}'>
         @include('includes.error-field', ['fieldName' => 'rail_transit_agency'])
 
-        <label for='inspection_date'>* Date of Inspection</label>
+        <label for='inspection_date'>* Date of Agency Safety Plan Review</label>
         <input type='date' name='inspection_date' id='inspection_date' value='{{ old('inspection_date') }}'>
         @include('includes.error-field', ['fieldName' => 'inspection_date'])
 
@@ -34,7 +34,7 @@
 
     </form>
     @else
-    There are no checklists available from which to begin a new inspection. Please ask the Safety Oversight Manager to create a checklist and then try again.
+    There are no checklists available from which to begin a new Agency Safety Plan Review. Please ask the Safety Oversight Manager to create a checklist and then try again.
     @endif
     <p></p>
 

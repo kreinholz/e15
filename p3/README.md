@@ -41,6 +41,7 @@
 + <https://hesweb.dev/e15/notes/laravel/auth-setup>
 + <https://stackoverflow.com/a/30414884>
 + <https://medium.com/justlaravel/how-to-use-middleware-for-content-restriction-based-on-user-role-in-laravel-2d0d8f8e94c6>
++ <https://www.php.net/manual/en/function.in-array.php>
 
 ## Notes for instructor
 + This is a prototype/proof-of-concept web app for a friend who works in the Rail Transit Safety field (state government). The idea was to take what is currently a pen-and-paper safety plan inspection checklist from which written inspection reports are based, and turn it into a fillable inspection form accessible from the web from which historical reports can be viewed from the web interface and stored in an easily maintainable database

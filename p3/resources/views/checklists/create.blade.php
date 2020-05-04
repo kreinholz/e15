@@ -8,7 +8,7 @@
 
     <h1>Create a new Checklist</h1>
 
-    <p>This form will allow you to create a new checklist. Select the inspection items you want your checklist to contain.</p>
+    <p>This form will allow you to create a new checklist. Select the Agency Safety Plan Review items you want your checklist to contain.</p>
 
     <form method='POST' action='/checklists'>
         <div class='details'>* Required fields</div>

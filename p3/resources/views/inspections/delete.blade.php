@@ -1,16 +1,16 @@
 @extends('layouts.master')
 
 @section('title')
-    Confirm deletion: Inspection of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }}
+    Confirm deletion: Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }}
 @endsection
 
 @section('content')
 @if($user->job_title != 'Safety Oversight Manager' and $user->id != $inspection->inspector_id)
-You do not have permission to delete this inspection!
+You do not have permission to delete this Agency Safety Plan Review!
 @else
     <h1>Confirm deletion</h1>
 
-    <p>Are you sure you want to delete this inspection?</p>
+    <p>Are you sure you want to delete this Agency Safety Plan Review?</p>
     <p>Inspection of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }} by {{ $inspector->first_name }} {{ $inspector->last_name }}</p>
 
     <form method='POST' action='/inspections/{{ $inspection->id }}'>
