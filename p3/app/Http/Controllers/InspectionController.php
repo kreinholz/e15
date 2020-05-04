@@ -224,7 +224,7 @@ class InspectionController extends Controller
             $inspection_item->save();
         }
 
-        # To do: check for and update the boolean on whether the inspection is complete.
+        # Check for and update the boolean on whether the inspection is complete.
         $completed = $request->completed;
         if ($completed) {
             $inspection->completed = true;

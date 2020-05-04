@@ -31,5 +31,3 @@
     </form>
 <p></p>
 @endsection
-
-<!-- 'item_name' 'plan_requirement' -->
