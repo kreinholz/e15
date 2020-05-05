@@ -5,7 +5,9 @@
 @endsection
 
 @section('content')
-
+    @if(!$item)
+    Checklist Item not found. <a href='/checklist-items'>See what checklist items are available.</a>
+    @else
     <h1>Edit Checklist Item</h1>
 
     <p>This form will allow you to edit an existing checklist item.</p>
@@ -36,5 +38,5 @@
         <input type='submit' value='Delete Checklist Item' class='btn btn-danger btn-small'>
     </form>
 <p></p>
-
+@endif
 @endsection

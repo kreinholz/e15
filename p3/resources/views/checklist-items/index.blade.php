@@ -6,7 +6,7 @@
 
 @section('content')
     <div id='newItem'>
-        <h2><a href='/checklist-items/create'>Add a New Checklist Item</a></h2>
+        <h2><a href='/checklist-items/create'><button class='btn btn-primary'>Add a New Checklist Item</button></a></h2>
     </div>
 <p></p>
     <div id='checklists'>

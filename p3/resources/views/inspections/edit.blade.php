@@ -6,7 +6,9 @@
 
 @section('content')
 
-@if($user->job_title != 'Safety Oversight Manager' and $user->id != $inspection->inspector_id)
+@if(!$inspection)
+Agency Safety Plan Review not found. <a href='/inspections'>See what Agency Safety Plan Reviews are available.</a>
+@elseif($user->job_title != 'Safety Oversight Manager' and $user->id != $inspection->inspector_id)
 Sorry, you don't have permission to edit this inspection.
 @else
 

@@ -110,15 +110,20 @@ class InspectionController extends Controller
     {
         $inspection = Inspection::where('id', '=', $id)->first();
 
-        $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
-
-        $inspection_items = $inspection_checklist->inspection_items()->get();
-
-        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+        $inspection_checklist = null;
+        $inspection_items = null;
+        $inspector = null;
+        
+        # Make sure $inspection returned something from the database before making further queries
+        if ($inspection) {
+            $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
+            $inspection_items = $inspection_checklist->inspection_items()->get();
+            $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+        }
 
         $original_inspector = null;
         
-        if ($inspection->inspector_id != $inspection_checklist->inspector_id) {
+        if ($inspection and $inspection->inspector_id != $inspection_checklist->inspector_id) {
             $original_inspector = User::where('id', '=', $inspection_checklist->inspector_id)->first();
         }
 
@@ -143,11 +148,16 @@ class InspectionController extends Controller
     {
         $inspection = Inspection::where('id', '=', $id)->first();
 
-        $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
-
-        $inspection_items = $inspection_checklist->inspection_items()->get();
-
-        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+        $inspection_checklist = null;
+        $inspection_items = null;
+        $inspector = null;
+        
+        # Make sure $inspection returned something from the database before making further queries
+        if ($inspection) {
+            $inspection_checklist = InspectionCl::where('id', '=', $inspection->checklist_id)->first();
+            $inspection_items = $inspection_checklist->inspection_items()->get();
+            $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+        }
 
         # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();
@@ -286,7 +296,11 @@ class InspectionController extends Controller
     {
         $inspection = Inspection::where('id', '=', $id)->first();
 
-        $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+        $inspector = null;
+
+        if ($inspection) {
+            $inspector = User::where('id', '=', $inspection->inspector_id)->first();
+        }
 
         # Query the database for the current user, based on the $request object from the session
         $user = User::where('id', '=', $request->user()->id)->first();

@@ -5,7 +5,9 @@
 @endsection
 
 @section('content')
-
+    @if(!$checklist)
+    Checklist not found. <a href='/checklists'>See what checklists are available.</a>
+    @else
     <h1>Edit Existing Checklist</h1>
 
     <p>This form will allow you to edit an existing checklist. Select the Agency Safety Plan Review items you want your checklist to contain, or deselect those you want to remove.</p>
@@ -40,5 +42,5 @@
     </form>
 <p></p>
     <p>Want to add a question/item that isn't included in the above list? Click <a href='/checklist-items'>here</a> to create new items for inclusion in checklists.</p>
-
+    @endif
 @endsection

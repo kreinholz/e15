@@ -72,7 +72,11 @@ class ChecklistController extends Controller
     {
         $checklist = Checklist::where('id', '=', $id)->first();
 
-        $checklist_items = $checklist->checklist_items()->where('checklist_id', '=', $id)->get();
+        $checklist_items = null;
+
+        if ($checklist) {
+            $checklist_items = $checklist->checklist_items()->where('checklist_id', '=', $id)->get();
+        }
 
         return view('checklists.show')->with([
             'checklist' => $checklist,
@@ -91,8 +95,11 @@ class ChecklistController extends Controller
         $checklist_items = ChecklistItem::orderBy('item_number')->orderBy('created_at')->get();
     
         # Get the current checklist_items associated with this checklist
-        $existing_items = $checklist->checklist_items()->get();
-
+        $existing_items = null;
+        if ($checklist) {
+            $existing_items = $checklist->checklist_items()->get();
+        }
+        
         # Compare the collection of all checklist_items to existing_items already associated with the checklist
         # Ref: https://laravel.com/docs/5.2/collections#method-diff
         $new_items = $checklist_items->diff($existing_items);
