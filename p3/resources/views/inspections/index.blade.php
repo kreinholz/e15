@@ -15,9 +15,9 @@
             <ul>    
                 @foreach($inspections as $inspection)
                     @if($inspection->completed == true)
-                    <li><a href='/inspections/{{ $inspection->id }}'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} (Completed)</a></li>
+                    <li><a href='/inspections/{{ $inspection->id }}'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }} (Completed)</a></li>
                     @else
-                    <li><a href='/inspections/{{ $inspection->id }}/edit'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} (In-Progress)</a></li>
+                    <li><a href='/inspections/{{ $inspection->id }}/edit'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }} (In-Progress)</a></li>
                     @endif
                 @endforeach
             </ul>
@@ -28,9 +28,9 @@
         <ul>    
             @foreach($myInspections as $inspection) 
                 @if($inspection->completed == true)
-                <li><a href='/inspections/{{ $inspection->id }}'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} (Completed)</a></li>
+                <li><a href='/inspections/{{ $inspection->id }}'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }} (Completed)</a></li>
                 @else
-                <li><a href='/inspections/{{ $inspection->id }}/edit'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ $inspection->inspection_date }} (In-Progress)</a></li>
+                <li><a href='/inspections/{{ $inspection->id }}/edit'>Agency Safety Plan Review of {{ $inspection->rail_transit_agency }} on {{ date('M d, Y', strtotime($inspection->inspection_date)) }} (In-Progress)</a></li>
                 @endif
             @endforeach
         </ul>

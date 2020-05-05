@@ -50,6 +50,7 @@ Sorry, you don't have permission to edit this inspection.
 
     </form>
 <p></p>
+<p><a href='/inspections/{{ $inspection->id }}'>Preview the report for this Agency Safety Plan Review</a></p>
 <p><a href='/inspections/{{ $inspection->id }}/delete'><button class='btn btn-danger'>Delete this Agency Safety Plan Review</button></a></p>
 @endif
 @endsection
