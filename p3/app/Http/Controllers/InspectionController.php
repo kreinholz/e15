@@ -199,6 +199,17 @@ class InspectionController extends Controller
         $inspection->inspector_id = $user->id;
         $inspection->save();
 
+        # Check for and update the boolean on whether the inspection is complete.
+        # The else allows a user to edit an inspection marked completed and uncheck the completed box
+        $completed = $request->completed;
+        if ($completed != false) {
+            $inspection->completed = true;
+            $inspection->save();
+        } else {
+            $inspection->completed = false;
+            $inspection->save();
+        }
+
         # Now that we've updated the appropriate row in the inspection table, it's time to update
         # the inspection_items indirectly associated with the inspection via the inspection_cls
         # table and its Many-to-Many relationship with inspection_items.
@@ -249,17 +260,6 @@ class InspectionController extends Controller
             $inspection_item = $inspection_items->where('id', $i)->first();
             $inspection_item->comments = $comment;
             $inspection_item->save();
-        }
-
-        # Check for and update the boolean on whether the inspection is complete.
-        # The else allows a user to edit an inspection marked completed and uncheck the completed box
-        $completed = $request->completed;
-        if ($completed) {
-            $inspection->completed = true;
-            $inspection->save();
-        } else {
-            $inspection->completed = false;
-            $inspection->save();
         }
 
         # Conditional redirect depending on whether inspection was marked completed
