@@ -227,6 +227,17 @@ class InspectionController extends Controller
         # Loop through $page_references array and store any updates to database
         # Ref for keeping track of current index: https://stackoverflow.com/a/141114
         foreach ($page_references as $i=>$page_reference) {
+            # Here is where we will validate each page_reference, since only smallint values
+            # are accepted by the database--ref: https://stackoverflow.com/a/49827194
+            # The downside is upon validation failure, all page_reference fields will display
+            # the error message, but it's preferable to no validation at all and SQL errors
+            $request = new Request([
+                'page_reference' => $page_reference
+            ]);
+            $this->validate($request, [
+                'page_reference' => 'integer|digits_between:1,3|max:999'
+            ]);
+
             $inspection_item = $inspection_items->where('id', $i)->first();
             $inspection_item->page_reference = $page_reference;
             $inspection_item->save();
