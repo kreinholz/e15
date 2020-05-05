@@ -219,12 +219,16 @@ class InspectionController extends Controller
         $page_references = $request->page_references;
         $comments = $request->comments;
 
-        # Loop through $includeds array and set any database booleans to true for checked boxes
-        foreach ($includeds as $included) {
-            $inspection_item = $inspection_items->where('id', $included)->first();
-            $inspection_item->included = true;
-            $inspection_item->save();
+        # Make sure $includeds contains data (i.e. the user didn't leave every box unchecked)
+        if ($includeds) {
+            # Loop through $includeds array and set any database booleans to true for checked boxes
+            foreach ($includeds as $included) {
+                $inspection_item = $inspection_items->where('id', $included)->first();
+                $inspection_item->included = true;
+                $inspection_item->save();
+            }
         }
+
 
         # Look for unchecked included checkboxes and set their value to false in the database
         # Ref: https://www.php.net/manual/en/function.in-array.php
@@ -246,7 +250,7 @@ class InspectionController extends Controller
                 'page_reference' => $page_reference
             ]);
             $this->validate($request, [
-                'page_reference' => 'integer|digits_between:1,3|max:999'
+                'page_reference' => 'integer|digits_between:1,3|max:999|nullable'
             ]);
 
             $inspection_item = $inspection_items->where('id', $i)->first();
