@@ -30,7 +30,7 @@ class AuthTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
-                    ->assertSee('Laravel');
+                    ->assertSeeLink('login');
         });
     }
 }
