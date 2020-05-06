@@ -50,11 +50,13 @@
 + <https://stackoverflow.com/a/49827194>
 + <https://stackoverflow.com/a/40465333>
 + <https://laravel.com/docs/7.x/routing>
++ <https://medium.com/zestgeek/customize-laravel-registration-form-with-additional-fields-de2c1e294a37>
++ <https://github.com/laravel/dusk/issues/100>
 
 ## Notes for instructor
 + This is a prototype/proof-of-concept web app for a friend who works in the Rail Transit Safety field (state government). The idea was to take what is currently a pen-and-paper safety plan inspection checklist from which written inspection reports are based, and turn it into a fillable inspection form accessible from the web from which historical reports can be viewed from the web interface and stored in an easily maintainable database
 + While abbreviating a table name is undesirable, I ran into a MySQL limitation when naming what is now `inspection_cls` the more logical `inspection_checklists`. While this name was accepted for the table, the join table between it and `inspection_items` failed due to an SQL length limitation error. As a result, I was forced to abbreviate/shorten the table name in order to make the Many-to-Many relationship work
-+ I did not expand beyond the default authentication routes--therefore, email verification and password reset have *not* been enabled
++ I did not expand beyond the default authentication routes other than to break the name field into first_name and last_name--therefore, email verification and password reset have *not* been enabled
 + My focus was very much on the database and on the relationships between database tables. The goal of this project was to provide an easy-to-use web interface for interacting with the database, and to allow customization of the checklist itself, as well as electronic storage of inspection reports. As such, a minimum of effort went into aesthetics
 + If I were to write this app "for the real world," I would utilize Vue.js or another JavaScript framework and AJAX calls to allow "snappier" loading and updating of `inspection_items` rather than requiring submittal of a form containing data on *all* items associated with an inspection every time the user wants to make an update. However, focusing on the server side, I did want users to be able to update multiple items with a single form submission, rather than requiring each item to be updated separately (which I could foresee getting pretty tedious)
-+ Another "real world" difference is I would never allow the user to select his/her job title during registration the way I currently have the database and route permissions set up. Instead, I would either manually have an administrator go in and set the job title to "Safety Oversight Manager" or add a "verified" boolean field to the users table so only those who truly need elevated access privileges had them
++ I deliberately did not provide a way for users to specify a job_title while registering. In the real world, a database administrator would have to access MySQL directly and add the appropriate job_title, i.e. "Safety Oversight Manager" to give super user access, if warranted
