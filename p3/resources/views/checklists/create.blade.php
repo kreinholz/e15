@@ -17,7 +17,9 @@
         <label for='title'>* Checklist Title</label>
         <input type='text' name='title' id='title' value='{{ old('title') }}'>
         @include('includes.error-field', ['fieldName' => 'title'])
-
+    @if(!$checklistItems)
+    No items have been added for potential inclusion in checklists. Click <a href='/checklist-items'>here</a> to create new items for inclusion in checklists.
+    @else
         <label for='checklist_items'>Available Checklist Items</label>
         @foreach($checklistItems as $item)
             <h4>{{ $item->item_number }}. {{ $item->item_name }}</h4>
@@ -29,7 +31,7 @@
         <input type='submit' class='btn btn-primary' value='Create Checklist'>
 
     </form>
-<p></p>
+    <p></p>
     <p>Want to add a question/item that isn't included in the above list? Click <a href='/checklist-items'>here</a> to create new items for inclusion in checklists.</p>
-
+    @endif
 @endsection

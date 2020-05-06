@@ -68,6 +68,10 @@ Route::group(['middleware' => 'auth'], function () {
         /* Show available checklist items */
         Route::get('/checklist-items', 'ChecklistItemController@index');
 
+        /* Redirect attempts to get to the non-existent show view for a checklist-item */
+        /* Ref: https://laravel.com/docs/7.x/routing */
+        Route::redirect('/checklist-items/{id}', '/checklist-items/{id}/edit')->where('id', '[0-9]+');
+
         /* Create a checklist item */
         Route::get('/checklist-items/create', 'ChecklistItemController@create');
         Route::post('/checklist-items', 'ChecklistItemController@store');
@@ -78,6 +82,12 @@ Route::group(['middleware' => 'auth'], function () {
 
         /* Delete a checklist item */
         Route::delete('/checklist-items/{id}', 'ChecklistItemController@destroy');
+
+        /* Redirect any unknown query or route parameter to home
+           Ref: https://laraveldaily.com/routes-file-redirect-everything-else-to-homepage/ */
+        Route::any('{query}', function () {
+            return redirect('/');
+        })->where('query', '.*');
     });
 });
 
