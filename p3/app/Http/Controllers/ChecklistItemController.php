@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Arr;
 use Str;
 use App\ChecklistItem;
+use App\Checklist;
 
 class ChecklistItemController extends Controller
 {
@@ -101,21 +102,6 @@ class ChecklistItemController extends Controller
         
         return redirect('/checklist-items')->with([
             'flash-alert' => 'Your changes to “'.$checklist_item->plan_requirement.'” were saved.'
-        ]);
-    }
-
-    /**
-    * Deletes the checklist
-    * DELETE /checklist-items/{id}
-    */
-    public function destroy($id)
-    {
-        $checklist_item = ChecklistItem::where('id', '=', $id)->first();
-
-        $checklist_item->delete();
-
-        return redirect('/checklist-items')->with([
-            'flash-alert' => 'The checklist item “' . $checklist_item->plan_requirement . '” was removed.'
         ]);
     }
 }

@@ -80,9 +80,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('checklist-items/{id}/edit', 'ChecklistItemController@edit');
         Route::put('/checklist-items/{id}', 'ChecklistItemController@update');
 
-        /* Delete a checklist item */
-        Route::delete('/checklist-items/{id}', 'ChecklistItemController@destroy');
-
         /* Redirect any unknown query or route parameter to home
            Ref: https://laraveldaily.com/routes-file-redirect-everything-else-to-homepage/ */
         Route::any('{query}', function () {

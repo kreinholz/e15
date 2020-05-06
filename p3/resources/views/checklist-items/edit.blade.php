@@ -32,11 +32,6 @@
         <input type='submit' class='btn btn-primary' value='Update Checklist Item'>
 
     </form>
-    <form method='POST' action='/checklist-items/{{ $item->id }}'>
-        {{ method_field('delete') }}
-        {{ csrf_field() }}
-        <input type='submit' value='Delete Checklist Item' class='btn btn-danger btn-small'>
-    </form>
 <p></p>
 @endif
 @endsection
