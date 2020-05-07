@@ -52,6 +52,7 @@
 + <https://laravel.com/docs/7.x/routing>
 + <https://medium.com/zestgeek/customize-laravel-registration-form-with-additional-fields-de2c1e294a37>
 + <https://github.com/laravel/dusk/issues/100>
++ <https://github.com/laravel/dusk/issues/83>
 
 ## Notes for instructor
 + This is a prototype/proof-of-concept web app for a friend who works in the Rail Transit Safety field (state government). The idea was to take what is currently a pen-and-paper safety plan inspection checklist from which written inspection reports are based, and turn it into a fillable inspection form accessible from the web from which historical reports can be viewed from the web interface and stored in an easily maintainable database
