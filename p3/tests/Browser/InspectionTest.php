@@ -37,6 +37,7 @@ class InspectionTest extends DuskTestCase
                 ->assertSeeLink('Agency Safety Plan Review of Atlantic Railway Authority on Apr 15, 2020 (Completed)');
         });
     }
+
     /**
      * A Dusk test to visit the /inspections/create route.
      *
@@ -89,6 +90,88 @@ class InspectionTest extends DuskTestCase
             ->clickLink('Agency Safety Plan Review of Dusk Transit Agency on Dec 31, 2020 (In-Progress)')
             ->assertPathIs('/inspections/4/edit')
             ->assertSee('Continue or Edit an Agency Safety Plan Review');
+        });
+    }
+
+    /**
+     * A Dusk test to visit the /inspections/2 show route.
+     *
+     * @return void
+     */
+    public function testVisitInspectionShow()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/2')
+                ->assertSee('Rail Transit Agency (RTA): Atlantic Railway Authority');
+        });
+    }
+
+    /**
+     * A Dusk test of unsuccessful inspection updating due to validation error.
+     *
+     * @return void
+     */
+    public function testInspectionInvalidField()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/3/edit')
+                ->assertInputValue('rail_transit_agency', 'Zebra Railways')
+                ->type('page_references[15]', 'six')
+                ->press('Save Changes')
+                ->assertVisible('.alert')
+                ->assertSee('The page reference must be an integer.')
+                ->assertInputValueIsNot('page_references[15]', 'six');
+        });
+    }
+
+    /**
+     * A Dusk test of successful inspection updating after unchecking a checkbox.
+     *
+     * @return void
+     */
+    public function testInspectionUncheckBox()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/3/edit')
+                ->uncheck('includeds[15]')
+                ->press('Save Changes')
+                ->assertVisible('.flash-alert')
+                ->assertSee('Your changes were saved.')
+                ->assertNotChecked('includeds[15]');
+        });
+    }
+
+    /**
+     * A Dusk test of successfully marking an inspection as completed.
+     *
+     * @return void
+     */
+    public function testInspectionCompletion()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/3/edit')
+                ->check('completed')
+                ->press('Save Changes')
+                ->assertVisible('.flash-alert')
+                ->assertSee('Your changes were saved and the inspection marked complete.')
+                ->assertPathIs('/inspections/3');
+        });
+    }
+
+    /**
+     * A Dusk test of inspection deletion.
+     *
+     * @return void
+     */
+    public function testInspectionDeletion()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/3/delete')
+            ->assertSee('Confirm deletion')
+            ->press('Yes, I want to delete it')
+            ->assertVisible('.flash-alert')
+            ->assertSee('The Inspection of Zebra Railways was removed.')
+            ->assertPathIs('/inspections');
         });
     }
 }
