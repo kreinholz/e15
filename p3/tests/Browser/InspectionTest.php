@@ -174,4 +174,37 @@ class InspectionTest extends DuskTestCase
             ->assertPathIs('/inspections');
         });
     }
+
+    /**
+     * A Dusk test of attempting to navigate to a non-existent inspection.
+     *
+     * @return void
+     */
+    public function testInspectionNotFound()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/5')
+            ->assertSee('Agency Safety Plan Review not found.');
+        });
+    }
+
+    /**
+     * A Dusk test of attempting to exceed this user's access privileges.
+     *
+     * @return void
+     */
+    public function testRouteSecurity()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/inspections/1/edit')
+            ->assertSee("Sorry, you don't have permission to edit this inspection.")
+            ->visit('/checklists/1')
+            ->assertPathIs('/')
+            ->visit('/checklist-items/1')
+            ->assertPathIs('/')
+            ->visit('/omega')
+            ->assertSee('404')
+            ->driver->manage()->deleteAllCookies();
+        });
+    }
 }
