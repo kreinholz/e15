@@ -57,7 +57,7 @@ class InspectionController extends Controller
         # and the values are validation rules to apply to those inputs
         $request->validate([
             'rail_transit_agency' => 'required',
-            'inspection_date' => 'required|date'
+            'inspection_date' => 'required|date_format:Y-m-d'
         ]);
 
         # Assuming form data passes validation, retrieve the selected checklist and eager load its associated checklist_items

@@ -6,7 +6,7 @@
 
 @section('content')
 
-    <h1>Start a New Agency Safety Plan Reviewn</h1>
+    <h1>Start a New Agency Safety Plan Review</h1>
 
     @if(count($checklists) > 0) 
     <p>This form will allow you to start a new Agency Safety Plan Review. Select the checklist you want to use for this Agency Safety Plan Review.</p>
