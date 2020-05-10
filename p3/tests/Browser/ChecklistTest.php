@@ -92,6 +92,23 @@ class ChecklistTest extends DuskTestCase
     }
 
     /**
+     * A Dusk test of unsuccessful checklist editing due to validation error.
+     *
+     * @return void
+     */
+    public function testChecklistMissingField()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/checklists/1/edit')
+                ->type('title', '')
+                ->press('Update Checklist')
+                ->assertVisible('.alert')
+                ->assertSee('The title field is required.')
+                ->assertInputValue('title', '');
+        });
+    }
+
+    /**
      * A Dusk test of successful checklist editing.
      *
      * @return void
